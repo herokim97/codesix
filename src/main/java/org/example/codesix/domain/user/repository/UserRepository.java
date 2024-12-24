@@ -1,6 +1,6 @@
-package org.example.codesix.User.Repository;
+package org.example.codesix.domain.user.repository;
 
-import org.example.codesix.User.Entity.User;
+import org.example.codesix.domain.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
