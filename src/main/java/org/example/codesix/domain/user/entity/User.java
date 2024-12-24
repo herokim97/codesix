@@ -1,4 +1,4 @@
-package org.example.codesix.User.Entity;
+package org.example.codesix.domain.user.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
