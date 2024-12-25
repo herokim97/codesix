@@ -23,7 +23,7 @@ public class Workspace extends BaseEntity {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false)
+    @Column
     private String description;
 
     @ManyToOne
