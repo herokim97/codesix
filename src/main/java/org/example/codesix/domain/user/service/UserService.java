@@ -12,6 +12,7 @@ import org.example.codesix.domain.user.entity.User;
 import org.example.codesix.domain.user.enums.UserRole;
 import org.example.codesix.domain.user.enums.UserStatus;
 import org.example.codesix.domain.user.repository.UserRepository;
+import org.example.codesix.global.exception.BadValueException;
 import org.example.codesix.global.exception.CustomException;
 import org.example.codesix.global.exception.ExceptionType;
 import org.example.codesix.global.util.AuthenticationScheme;
@@ -49,11 +50,13 @@ public class UserService {
         Optional<User> userByEmail = userRepository.findByEmail(email);
 
         if(userByEmail.isPresent()) {
-            if(userByEmail.get().getStatus() == UserStatus.DISABLED){
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이미 삭제된 이메일 입니다.");
-            } else if (userByEmail.get().getStatus() == UserStatus.ACTIVE)
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "동일한 이메일이 존재합니다.");
+            if(userByEmail.get().getStatus() == UserStatus.DISABLED) {
+                throw new BadValueException(ExceptionType.DELETED_USER);
+            } else if (userByEmail.get().getStatus() == UserStatus.ACTIVE) {
+                throw new BadValueException(ExceptionType.EXIST_USER);
+            }
         }
+
         User user = new User(email, password, role);
         User savedUser = userRepository.save(user);
 
