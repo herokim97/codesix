@@ -9,7 +9,6 @@ import org.example.codesix.domain.list.entity.CardList;
 import org.example.codesix.global.entity.BaseEntity;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +23,7 @@ public class Card extends BaseEntity {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "card_list_id",nullable = false)
+    @JoinColumn(name = "card_list_id", nullable = false)
     private CardList cardList;
 
     @Column(length = 255, nullable = false)
@@ -46,5 +45,9 @@ public class Card extends BaseEntity {
         this.dueDate = dueDate;
     }
 
-
+    public void update(String title, String description, LocalDate dueDate) {
+        this.title = title;
+        this.description = description;
+        this.dueDate = dueDate;
+    }
 }
