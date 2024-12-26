@@ -24,7 +24,7 @@ public class Card extends BaseEntity {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "list_id",nullable = false)
+    @JoinColumn(name = "card_list_id",nullable = false)
     private CardList cardList;
 
     @Column(length = 255, nullable = false)
