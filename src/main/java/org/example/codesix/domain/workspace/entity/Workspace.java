@@ -31,7 +31,7 @@ public class Workspace extends BaseEntity {
     private User creator;
 
     @OneToMany(mappedBy = "workspace", cascade = CascadeType.REMOVE)
-    private List<User> Members;
+    private List<Member> Members;
 
     @OneToMany(mappedBy = "workspace", cascade = CascadeType.REMOVE)
     private List<Board> boards;
