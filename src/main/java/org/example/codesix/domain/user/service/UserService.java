@@ -46,13 +46,13 @@ public class UserService {
         String password = passwordEncoder.encode(userSignupRequestDto.getPassword());
         UserRole role = userSignupRequestDto.getRole();
 
-        if(userRepository.findUserByEmail(email).isPresent()) {
+        if(userRepository.findByEmailOrElseThrow(email) != null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "동일한 이메일이 존재합니다.");
         }
-        Optional<User> existUser = userRepository.findUserByEmail(email);
+        User existUser = userRepository.findByEmailOrElseThrow(email);
 
-        if(existUser.isPresent()) {
-            User user = existUser.get();
+        if(existUser != null) {
+            User user = existUser;
             if(user.getStatus() == UserStatus.DISABLED) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이미 삭제된 이메일 입니다.");
             }
@@ -71,9 +71,9 @@ public class UserService {
         String email = userLoginRequestDto.getEmail();
         String password = userLoginRequestDto.getPassword();
 
-        Optional<User> loginUser = userRepository.findUserByEmail(email);
+        User loginUser = userRepository.findByEmailOrElseThrow(email);
 
-        if(!passwordEncoder.matches(password, loginUser.get().getPassword())) {
+        if(!passwordEncoder.matches(password, loginUser.getPassword())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "password 일치하지 않음.");
         }
 
@@ -99,7 +99,7 @@ public class UserService {
         response.addHeader("Set-Cookie", cookie.toString());
 
 
-        return new UserLoginResponseDto(loginUser.get().getId(), loginUser.get().getEmail(), "login Success" , AuthenticationScheme.BEARER.getName());
+        return new UserLoginResponseDto(loginUser.getId(), loginUser.getEmail(), "login Success" , AuthenticationScheme.BEARER.getName());
     }
 
 //    //테스트용 유저 조회
