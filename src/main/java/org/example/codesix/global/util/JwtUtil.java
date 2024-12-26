@@ -59,8 +59,7 @@ public class JwtUtil {
     }
 
     private String generateToken(String email) throws EntityNotFoundException {
-        User user = this.userRepository.findUserByEmail(email)
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+        User user = this.userRepository.findByEmailOrElseThrow(email);
 
         Date currentDate = new Date();
         Date expireDate = new Date(currentDate.getTime() + expiryMillis);
