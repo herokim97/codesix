@@ -80,6 +80,7 @@ public class UserService {
                 new UsernamePasswordAuthenticationToken(
                         userLoginRequestDto.getEmail(),
                         userLoginRequestDto.getPassword()
+
                 )
         );
 
@@ -101,14 +102,20 @@ public class UserService {
         return new UserLoginResponseDto(loginUser.getId(), loginUser.getEmail(), "login Success" , AuthenticationScheme.BEARER.getName());
     }
 
-//    //테스트용 유저 조회
-//    @Transactional
-//    public UserLoginResponseDto getUser(Long id) {
-//        Optional<User> user = userRepository.findById(id);
-//
-//        return new UserLoginResponseDto(user.get().getId(), user.get().getEmail(), "get Success");
-//
-//
-//    }
+    @Transactional
+    public void disableUser(String password) {
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String loginEmail = auth.getName();
+        User loginUser = userRepository.findByEmailOrElseThrow(loginEmail);
+
+        //비밀번호가 일치 하지 않는다면
+        if(!passwordEncoder.matches(password, loginUser.getPassword())) {
+            throw new BadValueException(ExceptionType.WRONG_PASSWORD);
+        }
+
+        loginUser.updateStatus(UserStatus.DISABLED);
+        userRepository.save(loginUser);
+    }
 
 }
