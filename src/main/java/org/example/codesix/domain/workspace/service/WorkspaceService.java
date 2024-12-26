@@ -1,6 +1,5 @@
 package org.example.codesix.domain.workspace.service;
 
-import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.codesix.domain.user.entity.User;
@@ -38,7 +37,6 @@ public class WorkspaceService {
 
     public List<WorkspaceResponseDto> findAll() {
         List<Workspace> workspaces = workspaceRepository.findAll();
-
         return workspaces.stream().map(WorkspaceResponseDto::toDto).toList();
     }
 
@@ -50,17 +48,17 @@ public class WorkspaceService {
     }
 
     @Transactional
-    public List<MemberResponseDto> addMember(Long id, MemberRequestDto memberRequestDto) {
-        Workspace workspace = findById(id);
-        List<User> users = findByEmails(memberRequestDto.getEmails());
-        List<Member> members = createMembers(workspace,users);
-        return saveMemberAndConvertToDto(members);
+    public void deleteWorkspace(Long id) {
+        workspaceRepository.findByIdOrElseThrow(id);
+        workspaceRepository.deleteById(id);
     }
 
     @Transactional
-    public void deleteWorkspace(Long id) {
-        Workspace workspace = findById(id);
-        workspaceRepository.delete(workspace);
+    public List<MemberResponseDto> addMember(Long workspaceId, MemberRequestDto memberRequestDto) {
+        Workspace workspace = findById(workspaceId);
+        List<User> users = findByEmails(memberRequestDto.getEmails());
+        List<Member> members = createMembers(workspace,users);
+        return saveMemberAndConvertToDto(members);
     }
 
     @Transactional
@@ -68,6 +66,17 @@ public class WorkspaceService {
         Member member = memberRepository.findByIdOrElseThrow(memberId);
         member.updatePart(memberPartRequestDto.getPart());
         return MemberResponseDto.toDto(member);
+    }
+
+    public List<MemberResponseDto> findAllMembers(Long workspaceId) {
+        List<Member> members = memberRepository.findAllByWorkspaceId(workspaceId);
+        return members.stream().map(MemberResponseDto::toDto).toList();
+    }
+
+    @Transactional
+    public void deleteMember(Long memberId) {
+        Member member = memberRepository.findByIdOrElseThrow(memberId);
+        memberRepository.delete(member);
     }
 
     public Workspace findById(Long id) {

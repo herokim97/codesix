@@ -5,10 +5,14 @@ import org.example.codesix.global.exception.ExceptionType;
 import org.example.codesix.global.exception.NotFoundException;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
-    default Member findByIdOrElseThrow(Long id){
-        return findById(id).orElseThrow(()-> new NotFoundException(ExceptionType.MEMBER_NOT_FOUND));
+    default Member findByIdOrElseThrow(Long id) {
+        return findById(id).orElseThrow(() -> new NotFoundException(ExceptionType.MEMBER_NOT_FOUND));
     }
+
+    List<Member> findAllByWorkspaceId(Long workspaceId);
 
 }
