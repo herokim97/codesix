@@ -13,7 +13,6 @@ public class WorkspaceRequestDto {
     @NotNull
     private final String title;
 
-    @NotNull
     private final String description;
 
     public WorkspaceRequestDto(Long userId, String title, String description) {
