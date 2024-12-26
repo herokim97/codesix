@@ -46,20 +46,16 @@ public class UserService {
         String password = passwordEncoder.encode(userSignupRequestDto.getPassword());
         UserRole role = userSignupRequestDto.getRole();
 
-        if(userRepository.findByEmailOrElseThrow(email) != null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "동일한 이메일이 존재합니다.");
-        }
-        User existUser = userRepository.findByEmailOrElseThrow(email);
+        Optional<User> userByEmail = userRepository.findByEmail(email);
 
-        if(existUser != null) {
-            User user = existUser;
-            if(user.getStatus() == UserStatus.DISABLED) {
+        if(userByEmail.isPresent()) {
+            if(userByEmail.get().getStatus() == UserStatus.DISABLED){
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이미 삭제된 이메일 입니다.");
-            }
+            } else if (userByEmail.get().getStatus() == UserStatus.ACTIVE)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "동일한 이메일이 존재합니다.");
         }
         User user = new User(email, password, role);
         User savedUser = userRepository.save(user);
-
 
         return new UserSignupResponseDto(savedUser.getId(), savedUser.getEmail(), savedUser.getRole());
 
