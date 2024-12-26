@@ -12,7 +12,9 @@ public enum ExceptionType {
     BOARD_NOT_FOUND(HttpStatus.NOT_FOUND,  "해당 보드의 정보를 찾을 수 없습니다."),
     LIST_NOT_FOUND(HttpStatus.NOT_FOUND,  "해당 리스트의 정보를 찾을 수 없습니다."),
     CARD_NOT_FOUND(HttpStatus.NOT_FOUND,  "해당 카드의 정보를 찾을 수 없습니다."),
-    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND,  "해당 댓글의 정보를 찾을 수 없습니다.");
+    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND,  "해당 댓글의 정보를 찾을 수 없습니다."),
+    EXIST_USER(HttpStatus.BAD_REQUEST, "동일한 이메일의 사용자가 존재합니다."),
+    DELETED_USER(HttpStatus.BAD_REQUEST, "이미 삭제된 유저입니다.");
 
     private final HttpStatus status;
     private final String message;
