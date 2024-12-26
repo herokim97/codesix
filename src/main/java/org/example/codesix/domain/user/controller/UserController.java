@@ -45,7 +45,7 @@ public class UserController {
 //        return new ResponseEntity<>(userLoginResponseDto, HttpStatus.OK);
 //    }
 
-    @PatchMapping("/{userId}")
+    @PatchMapping
     public ResponseEntity<String> disableUser( @RequestBody UserDisableUserRequestDto userDisableUserRequestDto) {
 
         userService.disableUser(userDisableUserRequestDto.getPassword());
