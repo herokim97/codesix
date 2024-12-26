@@ -33,7 +33,7 @@ public class WebConfig {
 
     private final AccessDeniedHandler accessDeniedHandler;
 
-    private static final String[] WHITE_LIST = {"/api/users/login", "/api/users/signup","/api/error"};
+    private static final String[] WHITE_LIST = {"/api/users/login", "/api/users/signup"};
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
