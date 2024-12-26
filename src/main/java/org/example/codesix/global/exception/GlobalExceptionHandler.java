@@ -1,13 +1,19 @@
 package org.example.codesix.global.exception;
 
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -67,6 +73,44 @@ public class GlobalExceptionHandler {
         log.error("[ {} ] - {} : {}", ex.getClass(), exceptionType.getStatus(), exceptionResponse.getErrors());
 
         return new ResponseEntity<>(exceptionResponse, exceptionType.getStatus());
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    protected ResponseEntity<CommonResponseBody<Void>> handleAuthenticationException(AuthenticationException e) {
+
+        HttpStatus statusCode = e instanceof BadCredentialsException
+                ? HttpStatus.FORBIDDEN : HttpStatus.UNAUTHORIZED;
+
+        return ResponseEntity
+                .status(statusCode)
+                .body(new CommonResponseBody<>(e.getMessage()));
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    protected ResponseEntity<CommonResponseBody<Void>> handleAccessDeniedException(AuthenticationException e) {
+
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(new CommonResponseBody<>(e.getMessage()));
+    }
+
+    @ExceptionHandler(JwtException.class)
+    protected ResponseEntity<CommonResponseBody<Void>> handleJwtException(JwtException e) {
+        HttpStatus httpStatus = e instanceof ExpiredJwtException
+                ? HttpStatus.UNAUTHORIZED
+                : HttpStatus.FORBIDDEN;
+
+                return ResponseEntity
+                        .status(httpStatus)
+                        .body(new CommonResponseBody<>(e.getMessage()));
+    }
+
+    @ExceptionHandler(ResponseStatusException.class)
+    protected ResponseEntity<CommonResponseBody<Void>> handleResponseStatusException(ResponseStatusException e) {
+
+        return ResponseEntity
+                .status(e.getStatusCode())
+                .body(new CommonResponseBody<>(e.getMessage()));
     }
 
 }
