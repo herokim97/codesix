@@ -44,7 +44,7 @@ public class CardController {
     @PatchMapping("/{id}")
     public ResponseEntity<CardResponseDto> updateCard(@PathVariable Long cardListId,
                                                       @PathVariable Long id,
-                                                      @RequestBody CardRequestDto cardRequestDto) {
+                                                      @Valid @RequestBody CardRequestDto cardRequestDto) {
         return ResponseEntity.status(HttpStatus.OK).body(cardService.updateCard(cardListId, id, cardRequestDto));
     }
 
