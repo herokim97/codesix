@@ -4,10 +4,7 @@ package org.example.codesix.domain.user.controller;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.example.codesix.domain.user.dto.UserLoginRequestDto;
-import org.example.codesix.domain.user.dto.UserLoginResponseDto;
-import org.example.codesix.domain.user.dto.UserSignupRequestDto;
-import org.example.codesix.domain.user.dto.UserSignupResponseDto;
+import org.example.codesix.domain.user.dto.*;
 import org.example.codesix.domain.user.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 public class UserController {
 
     private final UserService userService;
@@ -47,6 +44,14 @@ public class UserController {
 //
 //        return new ResponseEntity<>(userLoginResponseDto, HttpStatus.OK);
 //    }
+
+    @PatchMapping
+    public ResponseEntity<String> disableUser( @RequestBody UserDisableUserRequestDto userDisableUserRequestDto) {
+
+        userService.disableUser(userDisableUserRequestDto.getPassword());
+
+        return ResponseEntity.ok("회원 탈퇴 완료");
+    }
 
 
 }
