@@ -103,19 +103,20 @@ public class UserService {
     }
 
     @Transactional
-    public void disableUser(String password) {
+    public void disableUser(String password, User user) {
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String loginEmail = auth.getName();
-        User loginUser = userRepository.findByEmailOrElseThrow(loginEmail);
+//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//        String loginEmail = auth.getPrincipal().get;
+//        User loginUser = userRepository.findByEmailOrElseThrow(loginEmail);
+
 
         //비밀번호가 일치 하지 않는다면
-        if(!passwordEncoder.matches(password, loginUser.getPassword())) {
+        if(!passwordEncoder.matches(password, user.getPassword())) {
             throw new BadValueException(ExceptionType.WRONG_PASSWORD);
         }
 
-        loginUser.updateStatus(UserStatus.DISABLED);
-        userRepository.save(loginUser);
+        user.updateStatus(UserStatus.DISABLED);
+        userRepository.save(user);
     }
 
 }
