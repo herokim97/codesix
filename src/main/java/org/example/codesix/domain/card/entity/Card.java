@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.example.codesix.domain.list.entity.CardList;
+import org.example.codesix.domain.worklist.entity.WorkList;
 import org.example.codesix.global.entity.BaseEntity;
 
 import java.time.LocalDate;
@@ -23,8 +23,8 @@ public class Card extends BaseEntity {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "card_list_id", nullable = false)
-    private CardList cardList;
+    @JoinColumn(name = "work_list_id", nullable = false)
+    private WorkList workList;
 
     @Column(length = 255, nullable = false)
     private String title;
@@ -38,8 +38,8 @@ public class Card extends BaseEntity {
     @OneToMany(mappedBy = "card", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<CardMember> cardMembers = new ArrayList<>();
 
-    public Card(CardList cardList, String title, String description, LocalDate dueDate) {
-        this.cardList = cardList;
+    public Card(WorkList workList, String title, String description, LocalDate dueDate) {
+        this.workList = workList;
         this.title = title;
         this.description = description;
         this.dueDate = dueDate;

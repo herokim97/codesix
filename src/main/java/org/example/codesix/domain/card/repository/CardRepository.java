@@ -31,19 +31,19 @@ public interface CardRepository extends JpaRepository<Card, Long> {
                 SELECT c FROM Card c
                 LEFT JOIN c.cardMembers cm
                 LEFT JOIN cm.member m
-                WHERE c.cardList.id = :cardListId
+                WHERE c.workList.id = :workListId
                 AND (:title IS NULL OR LOWER(c.title) LIKE LOWER(CONCAT('%', :title, '%')))
                 AND (:dueDate IS NULL OR c.dueDate = :dueDate)
                 AND (:description IS NULL OR LOWER(c.description) LIKE LOWER(CONCAT('%', :description, '%')))
                 AND (:cardUserId IS NULL OR m.id = :cardUserId)
             """)
-    Page<Card> findAllCard(Long cardListId, String title, LocalDate dueDate, String description, Long cardUserId, Pageable pageable);
+    Page<Card> findAllCard(Long workListId, String title, LocalDate dueDate, String description, Long cardUserId, Pageable pageable);
 
 
-    Optional<Card> findByIdAndCardListId(Long id, Long cardListId);
+    Optional<Card> findByIdAndWorkListId(Long id, Long cardListId);
 
-    default Card findCardAndList(Long id, Long cardListId) {
-        return this.findByIdAndCardListId(id, cardListId)
+    default Card findWorkAndList(Long id, Long workListId) {
+        return this.findByIdAndWorkListId(id, workListId)
                 .orElseThrow(() -> new NotFoundException(ExceptionType.LIST_OR_CARD_NOT_FOUND));
     }
 

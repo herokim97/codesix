@@ -23,7 +23,7 @@ public class CardResponseDto {
     public static CardResponseDto toDto(Card card) {
         return new CardResponseDto(
                 card.getId(),
-                card.getCardList().getId(),
+                card.getWorkList().getId(),
                 card.getTitle(),
                 card.getDescription(),
                 card.getDueDate(),
