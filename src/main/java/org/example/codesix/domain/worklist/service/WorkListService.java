@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class WorkListService {
 
     private final WorkListRepository workListRepository;
-    private BoardRepository boardRepository;
+    private final BoardRepository boardRepository;
 
 
     @Transactional

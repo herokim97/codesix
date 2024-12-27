@@ -4,7 +4,11 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.codesix.domain.board.entity.Board;
+import org.example.codesix.domain.card.entity.Card;
 import org.example.codesix.global.entity.BaseEntity;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor
 @Entity
@@ -24,8 +28,8 @@ public class WorkList extends BaseEntity {
     @JoinColumn(name = "board_id")
     private Board board;
 
-//    @OneToMany(mappedBy = "List", cascade = CascadeType.REMOVE)
-//    private List<Card> cards = new ArrayList<>();
+    @OneToMany(mappedBy = "workList", cascade = CascadeType.REMOVE)
+    private List<Card> cards = new ArrayList<>();
 
     public WorkList(Board board, String title, String content) {
         this.board = board;
