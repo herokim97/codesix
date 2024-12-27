@@ -35,7 +35,6 @@ public class CommentService {
         return CommentResponseDto.toDto(savedComment);
     }
 
-
     public List<CommentResponseDto> findAllComments(Long cardId) {
         cardRepository.findByIdOrElseThrow(cardId);
         List<Comment> comments = commentRepository.findAllByCardId(cardId);
