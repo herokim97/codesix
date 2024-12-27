@@ -4,23 +4,30 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.codesix.domain.card.entity.Card;
+import org.example.codesix.domain.card.entity.CardMember;
+import org.example.codesix.global.entity.BaseEntity;
 
 import java.util.List;
 
 @Entity
 @Getter
 @Setter
-public class Comment {
+public class Comment extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "card_id",nullable = false)
+    @JoinColumn(name = "card_id", nullable = false)
     private Card card;
 
-    @Column
-    private String comment;
+    @ManyToOne
+    @JoinColumn(name = "card_member_id", nullable = false)
+    private CardMember cardMember;
+
+
+    @Column(nullable = false)
+    private String content;
 
 }
