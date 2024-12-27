@@ -44,7 +44,7 @@ public class WebConfig {
                                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                                 .dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.INCLUDE,DispatcherType.ERROR).permitAll()
                                 //path 별, 접근 가능 권한 설정
-                                .requestMatchers("/users").hasRole("USER")
+                                .requestMatchers("/api/workspaces").hasRole("ADMIN")
                                 .anyRequest().authenticated()
                                 )
                 .exceptionHandling(handler -> handler
