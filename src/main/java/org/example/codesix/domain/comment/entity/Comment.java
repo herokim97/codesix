@@ -30,4 +30,17 @@ public class Comment extends BaseEntity {
     @Column(nullable = false)
     private String content;
 
+    public Comment(Card card, CardMember cardMember, String content) {
+        this.card=card;
+        this.cardMember=cardMember;
+        this.content=content;
+    }
+
+    public Comment() {
+
+    }
+
+    public void update(String content) {
+        this.content=content;
+    }
 }

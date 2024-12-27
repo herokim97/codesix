@@ -1,6 +1,7 @@
 package org.example.codesix.domain.card.repository;
 
 import org.example.codesix.domain.card.entity.Card;
+import org.example.codesix.domain.card.entity.CardMember;
 import org.example.codesix.global.exception.ExceptionType;
 import org.example.codesix.global.exception.NotFoundException;
 import org.springframework.data.domain.Page;
@@ -12,6 +13,19 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 public interface CardRepository extends JpaRepository<Card, Long> {
+
+    default Card findByIdOrElseThrow(Long cardId) {
+        return findById(cardId)
+                .orElseThrow(() -> new NotFoundException(ExceptionType.CARD_NOT_FOUND));
+    }
+
+    @Query("SELECT cm FROM CardMember cm WHERE cm.id = :cardMemberId")
+    Optional<CardMember> findByCardMemberId(Long cardMemberId);
+
+    default CardMember findByCardMemberIdOrElseThrow(Long cardMemberId) {
+        return findByCardMemberId(cardMemberId)
+                .orElseThrow(() -> new NotFoundException(ExceptionType.CARD_MEMBER_NOT_FOUND));
+    }
 
     @Query("""
                 SELECT c FROM Card c
