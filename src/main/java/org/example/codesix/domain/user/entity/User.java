@@ -44,4 +44,8 @@ public class User extends BaseEntity {
 
     public User() {
     }
+
+    public void updateStatus(UserStatus status) {
+        this.status = status;
+    }
 }

@@ -28,7 +28,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
     private final UserDetailsService userDetailsService;
 
-    private static final List<String> WHITE_LIST = List.of("/users/login", "/users/signup", "/error");
+    private static final List<String> WHITE_LIST = List.of("/api/users/login", "/api/users/signup");
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
