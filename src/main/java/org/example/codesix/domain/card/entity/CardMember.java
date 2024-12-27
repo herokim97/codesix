@@ -12,6 +12,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@Table(name = "card_member", uniqueConstraints = {@UniqueConstraint(columnNames = {"card_id", "member_id"})})
 public class CardMember extends BaseEntity {
 
     @Id
@@ -22,7 +23,7 @@ public class CardMember extends BaseEntity {
     @JoinColumn(name = "card_id", nullable = false)
     private Card card;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 

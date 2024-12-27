@@ -39,21 +39,21 @@ public class CommentController {
         return ResponseEntity.status(HttpStatus.OK).body(comments);
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/{commentId}")
     public ResponseEntity<CommentResponseDto> udpateComment(@PathVariable Long cardId,
-                                                            @PathVariable Long id,
+                                                            @PathVariable Long commentId,
                                                             @Valid @RequestBody CommentRequestDto commentRequestDto,
                                                             @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
         User user = userDetailsImpl.getUser();
-        return ResponseEntity.ok(commentService.updateComment(cardId,id, user, commentRequestDto.getContent()));
+        return ResponseEntity.ok(commentService.updateComment(cardId,commentId, user, commentRequestDto.getContent()));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{commentId}")
     public ResponseEntity<String> deleteComment(@PathVariable Long cardId,
-                                                @PathVariable Long id,
+                                                @PathVariable Long commentId,
                                                 @AuthenticationPrincipal UserDetailsImpl userDetailsImpl){
         User user = userDetailsImpl.getUser();
-        commentService.deleteCard(cardId,id,user);
+        commentService.deleteComment(cardId,commentId,user);
         return ResponseEntity.status(HttpStatus.OK).body("댓글이 삭제되었습니다.");
     }
 }

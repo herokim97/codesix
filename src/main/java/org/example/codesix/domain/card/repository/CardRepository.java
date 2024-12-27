@@ -1,6 +1,7 @@
 package org.example.codesix.domain.card.repository;
 
 import org.example.codesix.domain.card.entity.Card;
+import org.example.codesix.domain.card.entity.CardHistory;
 import org.example.codesix.domain.card.entity.CardMember;
 import org.example.codesix.global.exception.ExceptionType;
 import org.example.codesix.global.exception.NotFoundException;
@@ -8,8 +9,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 public interface CardRepository extends JpaRepository<Card, Long> {
@@ -47,4 +50,13 @@ public interface CardRepository extends JpaRepository<Card, Long> {
                 .orElseThrow(() -> new NotFoundException(ExceptionType.LIST_OR_CARD_NOT_FOUND));
     }
 
+
+    @Query("SELECT DISTINCT c FROM Card c " +
+            "LEFT JOIN FETCH c.comments co " +
+            "LEFT JOIN FETCH c.cardMembers cm " +
+            "WHERE c.id = :cardId AND c.workList.id = :workListId")
+    Card findCardWithDetails(@Param("cardId") Long cardId, @Param("workListId") Long workListId);
+
+    @Query("SELECT h FROM CardHistory h WHERE h.card.id = :cardId")
+    List<CardHistory> findHistoryByCardId(Long cardId);
 }
