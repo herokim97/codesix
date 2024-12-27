@@ -6,8 +6,11 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.codesix.domain.user.dto.*;
 import org.example.codesix.domain.user.service.UserService;
+import org.example.codesix.global.auth.UserDetailsImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -46,9 +49,10 @@ public class UserController {
 //    }
 
     @PatchMapping
-    public ResponseEntity<String> disableUser( @RequestBody UserDisableUserRequestDto userDisableUserRequestDto) {
+    public ResponseEntity<String> disableUser(@RequestBody UserDisableUserRequestDto userDisableUserRequestDto,
+                                              @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
 
-        userService.disableUser(userDisableUserRequestDto.getPassword());
+        userService.disableUser(userDisableUserRequestDto.getPassword(), userDetailsImpl.getUser());
 
         return ResponseEntity.ok("회원 탈퇴 완료");
     }
