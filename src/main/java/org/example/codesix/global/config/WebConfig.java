@@ -3,13 +3,10 @@ package org.example.codesix.global.config;
 import jakarta.servlet.DispatcherType;
 import lombok.RequiredArgsConstructor;
 import org.example.codesix.global.filter.JwtAuthFilter;
-import org.example.codesix.global.interceptor.BoardPartInterceptor;
-import org.example.codesix.global.interceptor.WorkspacePartInterceptor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.Ordered;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -22,26 +19,18 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-public class WebConfig implements WebMvcConfigurer {
+public class WebConfig {
 
     private static final String[] WHITE_LIST = {"/api/users/login", "/api/users/signup"};
-    private static final String[] WORKSPACE_PART_REQUIRED_PATH_PATTERNS = {"/api/workspaces/*",
-                                                                           "/api/workspaces/{workspacesId}/members/**",
-                                                                           "/api/workspaces/members/{memberId}"};
 
     private final JwtAuthFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
     private final AuthenticationEntryPoint authenticationEntryPoint;
     private final AccessDeniedHandler accessDeniedHandler;
-
-    private final WorkspacePartInterceptor workspacePartInterceptor;
-    private final BoardPartInterceptor boardPartInterceptor;
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -64,19 +53,6 @@ public class WebConfig implements WebMvcConfigurer {
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
-    }
-
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(workspacePartInterceptor)
-                .addPathPatterns(WORKSPACE_PART_REQUIRED_PATH_PATTERNS)
-                .excludePathPatterns(WHITE_LIST)
-                .order(Ordered.HIGHEST_PRECEDENCE);
-        registry.addInterceptor(boardPartInterceptor)
-                .addPathPatterns("/api/**")
-                .excludePathPatterns(WORKSPACE_PART_REQUIRED_PATH_PATTERNS)
-                .excludePathPatterns(WHITE_LIST)
-                .order(Ordered.HIGHEST_PRECEDENCE+1);
     }
 
     //사용자 권한 계층 설정

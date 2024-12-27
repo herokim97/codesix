@@ -17,7 +17,7 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 @Component
-public class WorkspacePartInterceptor implements HandlerInterceptor {
+public class PartWorkspaceInterceptor implements HandlerInterceptor {
 
     private final MemberRepository memberRepository;
 
@@ -43,16 +43,12 @@ public class WorkspacePartInterceptor implements HandlerInterceptor {
             String workspaceId = pathVariables.get("workspaceId");
             Part part = memberRepository.findPartByUserEmailAndWorkspaceId(loginEmail, workspaceId);
             isWorkspace(part);
-        } else  if (pathVariables.containsKey("memberId")) {
-            String workspaceId = pathVariables.get("memberId");
-            Part part = memberRepository.findPartByUserEmailAndWorkspaceId(loginEmail, workspaceId);
-            isWorkspace(part);
         }
         return true;
     }
 
-    private void isWorkspace (Part part) {
-        if(part != Part.WORKSPACE) {
+    public static void isWorkspace(Part part) {
+        if (part != Part.WORKSPACE) {
             throw new ForbiddenException(ExceptionType.FORBIDDEN_ACTION);
         }
     }
