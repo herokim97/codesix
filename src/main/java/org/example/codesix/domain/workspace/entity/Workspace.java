@@ -26,7 +26,7 @@ public class Workspace extends BaseEntity {
     @Column
     private String description;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "creator_id", nullable = false)
     private User creator;
 
