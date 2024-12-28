@@ -45,6 +45,7 @@ public class CardService {
 
     @Transactional(readOnly = true)
     public CardDetailsResponseDto findCard(Long workListId, Long id) {
+        cardRepository.findWorkAndList(workListId,id);
         Card card = cardRepository.findCardWithDetails(id, workListId);
         List<Long> userIds = card.getCardMembers().stream()
                 .map(member -> member.getMember().getId())
@@ -80,7 +81,7 @@ public class CardService {
 
     private void validateCardOwner(Card card, User user) {
         boolean isOwner = card.getCardMembers().stream()
-                .anyMatch(member -> member.getMember().getId().equals(user.getId()));
+                .anyMatch(member -> member.getMember().getUser().getId().equals(user.getId()));
         if (!isOwner) {
             throw new ForbiddenException(ExceptionType.FORBIDDEN_ACTION);
         }

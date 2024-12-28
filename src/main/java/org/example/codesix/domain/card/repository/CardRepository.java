@@ -43,6 +43,7 @@ public interface CardRepository extends JpaRepository<Card, Long> {
     Page<Card> findAllCard(Long workListId, String title, LocalDate dueDate, String description, Long cardUserId, Pageable pageable);
 
 
+
     Optional<Card> findByIdAndWorkListId(Long id, Long cardListId);
 
     default Card findWorkAndList(Long id, Long workListId) {
