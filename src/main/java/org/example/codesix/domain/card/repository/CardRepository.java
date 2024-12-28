@@ -1,6 +1,8 @@
 package org.example.codesix.domain.card.repository;
 
+import org.example.codesix.domain.card.dto.CardFileResponseDto;
 import org.example.codesix.domain.card.entity.Card;
+import org.example.codesix.domain.card.entity.CardFile;
 import org.example.codesix.domain.card.entity.CardHistory;
 import org.example.codesix.domain.card.entity.CardMember;
 import org.example.codesix.global.exception.ExceptionType;
@@ -10,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.security.core.parameters.P;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -43,11 +46,15 @@ public interface CardRepository extends JpaRepository<Card, Long> {
     Page<Card> findAllCard(Long workListId, String title, LocalDate dueDate, String description, Long cardUserId, Pageable pageable);
 
 
+    @Query("""
+        SELECT c
+        FROM Card c
+        WHERE c.id = :id AND c.workList.id = :workListId
+        """)
+    Optional<Card> findByIdAndWorkListId(Long workListId, Long id);
 
-    Optional<Card> findByIdAndWorkListId(Long id, Long cardListId);
-
-    default Card findWorkAndList(Long id, Long workListId) {
-        return this.findByIdAndWorkListId(id, workListId)
+    default Card findWorkAndList(Long workListId, Long cardId) {
+        return this.findByIdAndWorkListId(workListId, cardId)
                 .orElseThrow(() -> new NotFoundException(ExceptionType.LIST_OR_CARD_NOT_FOUND));
     }
 
@@ -60,4 +67,14 @@ public interface CardRepository extends JpaRepository<Card, Long> {
 
     @Query("SELECT h FROM CardHistory h WHERE h.card.id = :cardId")
     List<CardHistory> findHistoryByCardId(Long cardId);
+
+    @Query("""
+        SELECT cf
+        FROM CardFile cf
+        LEFT JOIN cf.card c
+        LEFT JOIN c.workList wl
+        WHERE wl.id = :workListId
+          AND c.id = :cardId
+        """)
+    List<CardFile> findByWorkListAndCard(@Param("workListId") Long workListId, @Param("cardId") Long cardId);
 }
