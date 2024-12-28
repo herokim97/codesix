@@ -58,6 +58,8 @@ public interface CardRepository extends JpaRepository<Card, Long> {
                 .orElseThrow(() -> new NotFoundException(ExceptionType.LIST_OR_CARD_NOT_FOUND));
     }
 
+    @Query("select c.workList.board.workspace.id from Card c where c.id = :cardId")
+    Long findWorkspaceIdById(Long cardId);
 
     @Query("SELECT DISTINCT c FROM Card c " +
             "LEFT JOIN FETCH c.comments co " +
