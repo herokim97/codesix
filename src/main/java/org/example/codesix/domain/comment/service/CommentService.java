@@ -63,7 +63,8 @@ public class CommentService {
 
     private void validateCommentOwner(Comment comment, User user) {
         // 댓글 작성자와 현재 로그인한 사용자 ID가 일치하는지 확인
-        if (!comment.getCardMember().getMember().getId().equals(user.getId())) {
+
+        if (!comment.getCardMember().getMember().getUser().getId().equals(user.getId())) {
             throw new ForbiddenException(ExceptionType.FORBIDDEN_ACTION);
         }
     }
