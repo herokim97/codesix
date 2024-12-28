@@ -1,19 +1,16 @@
 package org.example.codesix.domain.comment.service;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.example.codesix.domain.card.entity.Card;
+import org.example.codesix.domain.card.entity.CardHistory;
 import org.example.codesix.domain.card.entity.CardMember;
 import org.example.codesix.domain.card.repository.CardRepository;
-import org.example.codesix.domain.comment.dto.CommentRequestDto;
 import org.example.codesix.domain.comment.dto.CommentResponseDto;
 import org.example.codesix.domain.comment.entity.Comment;
 import org.example.codesix.domain.comment.repository.CommentRepository;
 import org.example.codesix.domain.user.entity.User;
 import org.example.codesix.global.exception.ExceptionType;
 import org.example.codesix.global.exception.ForbiddenException;
-import org.example.codesix.global.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,12 +22,12 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final CardRepository cardRepository;
 
+    @Transactional
     public CommentResponseDto createComment(Long cardId, User user, String content) {
         CardMember cardMember = cardRepository.findByCardMemberIdOrElseThrow(user.getId());
-
         Card card = cardRepository.findByIdOrElseThrow(cardId);
-
-        Comment comment = new Comment(card,cardMember,content);
+        Comment comment = new Comment(card, cardMember, content);
+        card.addHistory(createCardHistory(card, "댓글 작성", user.getId()));
         Comment savedComment = commentRepository.save(comment);
         return CommentResponseDto.toDto(savedComment);
     }
@@ -43,22 +40,31 @@ public class CommentService {
 
     @Transactional
     public CommentResponseDto updateComment(Long cardId,Long id, User user, String content) {
-        cardRepository.findByIdOrElseThrow(cardId);
+        Card card = cardRepository.findByIdOrElseThrow(cardId);
         Comment comment = commentRepository.findByIdOrElseThrow(id);
-        if(!comment.getCard().getId().equals(user.getId())) {
-            throw new ForbiddenException(ExceptionType.FORBIDDEN_ACTION);
-        }
-
+        validateCommentOwner(comment, user);
+        card.addHistory(createCardHistory(card, "댓글 수정", user.getId()));
         comment.update(content);
         return CommentResponseDto.toDto(comment);
     }
 
-    public void deleteCard(Long cardId, Long id, User user) {
-        cardRepository.findByIdOrElseThrow(cardId);
+    @Transactional
+    public void deleteComment(Long cardId, Long id, User user) {
+        Card card = cardRepository.findByIdOrElseThrow(cardId);
         Comment comment = commentRepository.findByIdOrElseThrow(id);
-        if(!comment.getCard().getId().equals(user.getId())) {
+        validateCommentOwner(comment, user);
+        card.addHistory(createCardHistory(card, "댓글 삭제", user.getId()));
+        commentRepository.delete(comment);
+    }
+
+    private CardHistory createCardHistory(Card card, String message, Long userId) {
+        return new CardHistory(card, message, userId);
+    }
+
+    private void validateCommentOwner(Comment comment, User user) {
+        // 댓글 작성자와 현재 로그인한 사용자 ID가 일치하는지 확인
+        if (!comment.getCardMember().getMember().getId().equals(user.getId())) {
             throw new ForbiddenException(ExceptionType.FORBIDDEN_ACTION);
         }
-        commentRepository.delete(comment);
     }
 }
