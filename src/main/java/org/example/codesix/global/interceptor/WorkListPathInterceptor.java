@@ -3,6 +3,7 @@ package org.example.codesix.global.interceptor;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.example.codesix.domain.worklist.repository.WorkListRepository;
 import org.example.codesix.domain.workspace.enums.Part;
 import org.example.codesix.domain.workspace.repository.MemberRepository;
 import org.springframework.security.core.Authentication;
@@ -20,6 +21,7 @@ import static org.example.codesix.global.interceptor.WorkspacePathInterceptor.is
 public class WorkListPathInterceptor implements HandlerInterceptor {
 
     private final MemberRepository memberRepository;
+    private final WorkListRepository workListRepository;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
@@ -36,8 +38,9 @@ public class WorkListPathInterceptor implements HandlerInterceptor {
         Map<String, String> pathVariables = (Map<String, String>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
 
         if (pathVariables.containsKey("WorkListId")) {
-            String WorkListId = pathVariables.get("WorkListId");
-            Part part = memberRepository.findPartByUserEmailAndcardId(loginEmail, WorkListId);
+            Long workListId = Long.valueOf(pathVariables.get("workListId"));
+            Long workspaceId = workListRepository.findWorkspaceIdById(workListId);
+            Part part = memberRepository.findPartByUserEmailAndWorkspaceId(loginEmail, workspaceId);
             isBoardOrWorkspace(part);
         }
         return true;

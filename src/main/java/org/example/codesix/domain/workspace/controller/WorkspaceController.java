@@ -59,7 +59,7 @@ public class WorkspaceController {
     }
 
     //멤버 역할 수정 API
-    @PatchMapping("/members/{memberId}")
+    @PatchMapping("{workspaceId}/members/{memberId}")
     public ResponseEntity<MemberResponseDto> updateMemberPart(@PathVariable Long memberId,
                                                               @RequestBody MemberPartRequestDto memberPartRequestDto) {
 
@@ -73,7 +73,7 @@ public class WorkspaceController {
     }
 
     //멤버 삭제
-    @DeleteMapping("/members/{memberId}")
+    @DeleteMapping("{workspaceId}/members/{memberId}")
     public ResponseEntity<String> deleteMember(@PathVariable Long memberId){
         workspaceService.deleteMember(memberId);
         return ResponseEntity.ok().body("멤버가 삭제되었습니다.");

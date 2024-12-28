@@ -18,5 +18,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     List<Member> findAllByWorkspaceId(Long workspaceId);
 
     @Query("select m.part from Member m where m.user.email = :loginEmail and m.workspace.id = :workspaceId")
-    Part findPartByUserEmailAndWorkspaceId(String loginEmail, String workspaceId);
+    Part findPartByUserEmailAndWorkspaceId(String loginEmail, Long workspaceId);
+
 }

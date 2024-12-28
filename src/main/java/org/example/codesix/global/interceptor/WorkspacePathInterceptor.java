@@ -36,7 +36,7 @@ public class WorkspacePathInterceptor implements HandlerInterceptor {
         Map<String, String> pathVariables = (Map<String, String>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
 
         if (pathVariables.containsKey("workspaceId")) {
-            String workspaceId = pathVariables.get("workspaceId");
+            Long workspaceId = Long.valueOf(pathVariables.get("workspaceId"));
             Part part = memberRepository.findPartByUserEmailAndWorkspaceId(loginEmail, workspaceId);
             isBoardOrWorkspace(part);
         }
@@ -44,7 +44,7 @@ public class WorkspacePathInterceptor implements HandlerInterceptor {
     }
 
     public static void isBoardOrWorkspace(Part part) {
-        if (part != Part.BOARD && part != Part.WORKSPACE) {
+        if (part != Part.BOARD) {
             throw new ForbiddenException(ExceptionType.FORBIDDEN_ACTION);
         }
     }
