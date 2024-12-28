@@ -43,7 +43,6 @@ public interface CardRepository extends JpaRepository<Card, Long> {
     Page<Card> findAllCard(Long workListId, String title, LocalDate dueDate, String description, Long cardUserId, Pageable pageable);
 
 
-
     Optional<Card> findByIdAndWorkListId(Long id, Long cardListId);
 
     default Card findWorkAndList(Long id, Long workListId) {
@@ -51,6 +50,8 @@ public interface CardRepository extends JpaRepository<Card, Long> {
                 .orElseThrow(() -> new NotFoundException(ExceptionType.LIST_OR_CARD_NOT_FOUND));
     }
 
+    @Query("select c.workList.board.workspace.id from Card c where c.id = :cardId")
+    Long findWorkspaceIdById(Long cardId);
 
     @Query("SELECT DISTINCT c FROM Card c " +
             "LEFT JOIN FETCH c.comments co " +

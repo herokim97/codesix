@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -25,15 +26,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class WebConfig {
 
-    private final JwtAuthFilter jwtAuthFilter;
-
-    private final AuthenticationProvider authenticationProvider;
-
-    private final AuthenticationEntryPoint authenticationEntryPoint;
-
-    private final AccessDeniedHandler accessDeniedHandler;
-
     private static final String[] WHITE_LIST = {"/api/users/login", "/api/users/signup"};
+
+    private final JwtAuthFilter jwtAuthFilter;
+    private final AuthenticationProvider authenticationProvider;
+    private final AuthenticationEntryPoint authenticationEntryPoint;
+    private final AccessDeniedHandler accessDeniedHandler;
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -44,7 +42,7 @@ public class WebConfig {
                                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                                 .dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.INCLUDE,DispatcherType.ERROR).permitAll()
                                 //path 별, 접근 가능 권한 설정
-                                .requestMatchers("/api/workspaces").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.POST,"/api/workspaces").hasRole("ADMIN")
                                 .anyRequest().authenticated()
                                 )
                 .exceptionHandling(handler -> handler

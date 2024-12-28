@@ -3,8 +3,10 @@ package org.example.codesix.domain.workspace.controller;
 import lombok.RequiredArgsConstructor;
 import org.example.codesix.domain.workspace.dto.*;
 import org.example.codesix.domain.workspace.service.WorkspaceService;
+import org.example.codesix.global.auth.UserDetailsImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,12 +19,10 @@ public class WorkspaceController {
     private final WorkspaceService workspaceService;
 
     //워크스페이스 생성 API
-    // @param userId     -------> 로그인 중인 워크스페이스 ADMIN의 정보를 가져와야함
     @PostMapping()
-    public ResponseEntity<WorkspaceResponseDto> createWorkspace(@RequestBody WorkspaceRequestDto requestDto) {
-        //임의의 userId 설정 (이후 쿠키에서 유저 id를 가져올것)
-        Long userId = 1L;
-        return ResponseEntity.status(HttpStatus.CREATED).body(workspaceService.createWorkspace(userId, requestDto));
+    public ResponseEntity<WorkspaceResponseDto> createWorkspace(@RequestBody WorkspaceRequestDto requestDto,
+                                                                @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(workspaceService.createWorkspace(userDetailsImpl.getUser().getId(), requestDto));
     }
 
     //워크스페이스 단건 조회 API
@@ -59,7 +59,7 @@ public class WorkspaceController {
     }
 
     //멤버 역할 수정 API
-    @PatchMapping("/members/{memberId}")
+    @PatchMapping("{workspaceId}/members/{memberId}")
     public ResponseEntity<MemberResponseDto> updateMemberPart(@PathVariable Long memberId,
                                                               @RequestBody MemberPartRequestDto memberPartRequestDto) {
 
@@ -73,7 +73,7 @@ public class WorkspaceController {
     }
 
     //멤버 삭제
-    @DeleteMapping("/members/{memberId}")
+    @DeleteMapping("{workspaceId}/members/{memberId}")
     public ResponseEntity<String> deleteMember(@PathVariable Long memberId){
         workspaceService.deleteMember(memberId);
         return ResponseEntity.ok().body("멤버가 삭제되었습니다.");

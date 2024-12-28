@@ -28,6 +28,8 @@ public class WorkspaceService {
         User creator = userRepository.findByIdOrElseThrow(userId);
         Workspace workspace = new Workspace(requestDto.getTitle(), requestDto.getDescription(), creator);
         Workspace savedWorkspace = workspaceRepository.save(workspace);
+        Member member = new Member(workspace, creator,Part.WORKSPACE);
+        memberRepository.save(member);
         return WorkspaceResponseDto.toDto(savedWorkspace);
     }
 
