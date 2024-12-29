@@ -87,11 +87,15 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    protected ResponseEntity<CommonResponseBody<Void>> handleAccessDeniedException(AuthenticationException e) {
+    protected ResponseEntity<ExceptionResponse> handleAccessDeniedException(AccessDeniedException e) {
 
-        return ResponseEntity
-                .status(HttpStatus.UNAUTHORIZED)
-                .body(new CommonResponseBody<>(e.getMessage()));
+        ExceptionResponse response = new ExceptionResponse(
+                HttpStatus.FORBIDDEN,
+                HttpStatus.FORBIDDEN.value(),
+                Map.of("Access-Dined", "사용자 권한이 부족합니다.")
+        );
+        return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
+
     }
 
     @ExceptionHandler(JwtException.class)
