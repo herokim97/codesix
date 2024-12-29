@@ -19,8 +19,8 @@ public class BoardController {
     //보드 생성
     @PostMapping
     public ResponseEntity<BoardResponseDto> createBoard(@PathVariable Long workspaceId,
-                                                        @RequestBody BoardRequestDto requestdto) {
-        BoardResponseDto boardResponseDto = boardService.createBoard(workspaceId, requestdto);
+                                                        @RequestBody BoardRequestDto requestDto) {
+        BoardResponseDto boardResponseDto = boardService.createBoard(workspaceId, requestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(boardResponseDto);
     }
 
@@ -33,16 +33,18 @@ public class BoardController {
 
     //보드 수정
     @PatchMapping("/{boardId}")
-    public ResponseEntity<BoardResponseDto> updateBoard(@PathVariable Long boardId,
-                                                        @RequestBody BoardRequestDto requestdto) {
-        BoardResponseDto boardResponseDto = boardService.updateBoard(boardId, requestdto);
+    public ResponseEntity<BoardResponseDto> updateBoard(@PathVariable Long workspaceId,
+                                                        @PathVariable Long boardId,
+                                                        @RequestBody BoardRequestDto requestDto) {
+        BoardResponseDto boardResponseDto = boardService.updateBoard(workspaceId, boardId, requestDto);
         return ResponseEntity.ok(boardResponseDto);
     }
 
     //보드 삭제
     @DeleteMapping("/{boardId}")
-    public ResponseEntity<Void> deleteBoard(@PathVariable Long boardId) {
-        boardService.deleteBoard(boardId);
+    public ResponseEntity<Void> deleteBoard(@PathVariable Long workspaceId,
+                                            @PathVariable Long boardId) {
+        boardService.deleteBoard(workspaceId, boardId);
         return ResponseEntity.noContent().build();
 
     }

@@ -14,7 +14,7 @@ import org.springframework.web.servlet.HandlerMapping;
 
 import java.util.Map;
 
-import static org.example.codesix.global.interceptor.WorkspacePathInterceptor.isBoardOrWorkspace;
+import static org.example.codesix.global.interceptor.PartBoardInterceptor.isBoardOrWorkspace;
 
 @RequiredArgsConstructor
 @Component

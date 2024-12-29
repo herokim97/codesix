@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.example.codesix.domain.board.repository.BoardRepository;
 import org.example.codesix.domain.workspace.enums.Part;
 import org.example.codesix.domain.workspace.repository.MemberRepository;
-import org.example.codesix.domain.workspace.repository.WorkspaceRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -15,7 +14,7 @@ import org.springframework.web.servlet.HandlerMapping;
 
 import java.util.Map;
 
-import static org.example.codesix.global.interceptor.WorkspacePathInterceptor.isBoardOrWorkspace;
+import static org.example.codesix.global.interceptor.PartBoardInterceptor.isBoardOrWorkspace;
 
 @Component
 @RequiredArgsConstructor

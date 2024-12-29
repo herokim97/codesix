@@ -31,13 +31,17 @@ public class Workspace extends BaseEntity {
     private User creator;
 
     @OneToMany(mappedBy = "workspace", cascade = CascadeType.REMOVE)
-    private List<Member> Members;
+    private List<Member> members;
 
     @OneToMany(mappedBy = "workspace", cascade = CascadeType.REMOVE)
     private List<Board> boards;
 
     @Enumerated(EnumType.STRING)
     private NotificationPlatform notificationPlatform = NotificationPlatform.SLACK;         //이 프로젝트에서는 SLACK을 통한 알림만을 구현
+
+    private String oAuthToken;
+
+    private String notificationChannel;
 
     public Workspace(String title, String description, User creator) {
         this.title = title;
@@ -51,5 +55,10 @@ public class Workspace extends BaseEntity {
     public void update(String title, String description) {
         this.title = title;
         this.description = description;
+    }
+
+    public void updateNotificationSettings(String oAuthToken, String notificationChannel) {
+        this.oAuthToken = oAuthToken;
+        this.notificationChannel = notificationChannel;
     }
 }

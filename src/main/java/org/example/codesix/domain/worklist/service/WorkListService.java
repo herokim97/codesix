@@ -5,10 +5,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.codesix.domain.board.entity.Board;
 import org.example.codesix.domain.board.repository.BoardRepository;
+import org.example.codesix.domain.notification.enums.Type;
+import org.example.codesix.domain.notification.service.SlackService;
 import org.example.codesix.domain.worklist.dto.WorkListRequestDto;
 import org.example.codesix.domain.worklist.dto.WorkListResponseDto;
 import org.example.codesix.domain.worklist.entity.WorkList;
 import org.example.codesix.domain.worklist.repository.WorkListRepository;
+import org.example.codesix.domain.workspace.entity.Workspace;
+import org.example.codesix.domain.workspace.repository.WorkspaceRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,14 +27,18 @@ public class WorkListService {
 
     private final WorkListRepository workListRepository;
     private final BoardRepository boardRepository;
+    private final WorkspaceRepository workspaceRepository;
+    private final SlackService slackService;
 
 
     @Transactional
-    public WorkListResponseDto createWorkList(Long boardId,
+    public WorkListResponseDto createWorkList(Long workspaceId, Long boardId,
                                               WorkListRequestDto dto) {
+        Workspace workspace = workspaceRepository.findByIdOrElseThrow(workspaceId);
         Board board = boardRepository.findByIdOrElseThrow(boardId);
         WorkList workList = new WorkList(board, dto.getTitle());
         workListRepository.save(workList);
+        slackService.callSlackApi(board.getTitle(), workList.getTitle(), Type.WORK_LIST_ADD, workspace);
         return WorkListResponseDto.toDto(workList);
     }
 
@@ -49,20 +57,35 @@ public class WorkListService {
     }
 
     @Transactional
-    public WorkListResponseDto updateList(Long workListId,
+    public WorkListResponseDto updateList(Long workspaceId,
+                                          Long boardId,
+                                          Long workListId,
                                           WorkListRequestDto dto) {
-        WorkList worklist = workListRepository.findByIdOrElseThrow(workListId);
-        worklist.updateList(dto.getTitle());
-        WorkList savedWorkList = workListRepository.save(worklist);
+
+        Workspace workspace = workspaceRepository.findByIdOrElseThrow(workspaceId);
+        WorkList workList = workListRepository.findByIdOrElseThrow(workListId);
+        Board board = boardRepository.findByIdOrElseThrow(boardId);
+
+        workList.updateList(dto.getTitle());
+        WorkList savedWorkList = workListRepository.save(workList);
+
+        slackService.callSlackApi(board.getTitle(), savedWorkList.getTitle(), Type.WORK_LIST_UPDATE, workspace);
         return new WorkListResponseDto(savedWorkList.getId(),
                                        savedWorkList.getTitle(),
                                        savedWorkList.getSequence());
     }
 
     @Transactional
-    public void deleteList(Long workListId) {
-        WorkList worklist = workListRepository.findByIdOrElseThrow(workListId);
-        workListRepository.delete(worklist);
+    public void deleteList(Long workspaceId,
+                           Long boardId,
+                           Long workListId) {
 
+        Workspace workspace = workspaceRepository.findByIdOrElseThrow(workspaceId);
+        Board board = boardRepository.findByIdOrElseThrow(boardId);
+        WorkList workList = workListRepository.findByIdOrElseThrow(workListId);
+
+        workListRepository.delete(workList);
+
+        slackService.callSlackApi(board.getTitle(), workList.getTitle(), Type.WORK_LIST_DELETE, workspace);
     }
 }
