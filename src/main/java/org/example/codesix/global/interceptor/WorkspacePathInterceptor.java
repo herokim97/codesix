@@ -15,6 +15,8 @@ import org.springframework.web.servlet.HandlerMapping;
 
 import java.util.Map;
 
+import static org.example.codesix.global.interceptor.PartBoardInterceptor.isBoardOrWorkspace;
+
 @RequiredArgsConstructor
 @Component
 public class WorkspacePathInterceptor implements HandlerInterceptor {
@@ -41,11 +43,5 @@ public class WorkspacePathInterceptor implements HandlerInterceptor {
             isBoardOrWorkspace(part);
         }
         return true;
-    }
-
-    public static void isBoardOrWorkspace(Part part) {
-        if (part != Part.BOARD) {
-            throw new ForbiddenException(ExceptionType.FORBIDDEN_ACTION);
-        }
     }
 }

@@ -44,6 +44,14 @@ public class WorkspaceController {
         return ResponseEntity.ok().body(workspaceService.updateWorkspace(id, requestDto));
     }
 
+    //워크스페이스 알림설정 API
+    @PatchMapping("/{workspaceId}/notifications")
+    public ResponseEntity<String> updateNotificationSettings(@PathVariable Long workspaceId,
+                                                             @RequestBody WorkspaceNotificationRequestDto requestDto) {
+        workspaceService.updateNotificationSettings(workspaceId, requestDto);
+        return ResponseEntity.ok().body("설정이 완료되었습니다.");
+    }
+
     //워크스페이스 삭제 API
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteWorkspace(@PathVariable Long id) {
@@ -74,8 +82,9 @@ public class WorkspaceController {
 
     //멤버 삭제
     @DeleteMapping("{workspaceId}/members/{memberId}")
-    public ResponseEntity<String> deleteMember(@PathVariable Long memberId){
-        workspaceService.deleteMember(memberId);
+    public ResponseEntity<String> deleteMember(@PathVariable Long workspaceId,
+                                               @PathVariable Long memberId){
+        workspaceService.deleteMember(workspaceId, memberId);
         return ResponseEntity.ok().body("멤버가 삭제되었습니다.");
     }
 }

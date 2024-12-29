@@ -8,11 +8,15 @@ import org.example.codesix.domain.card.entity.CardMember;
 import org.example.codesix.domain.card.repository.CardFileRepository;
 import org.example.codesix.domain.card.repository.CardMemberRepository;
 import org.example.codesix.domain.comment.dto.CommentResponseDto;
+import org.example.codesix.domain.notification.enums.Type;
+import org.example.codesix.domain.notification.service.SlackService;
 import org.example.codesix.domain.user.entity.User;
 import org.example.codesix.domain.worklist.entity.WorkList;
 import org.example.codesix.domain.worklist.repository.WorkListRepository;
 import org.example.codesix.domain.workspace.entity.Member;
+import org.example.codesix.domain.workspace.entity.Workspace;
 import org.example.codesix.domain.workspace.repository.MemberRepository;
+import org.example.codesix.domain.workspace.repository.WorkspaceRepository;
 import org.example.codesix.global.exception.ForbiddenException;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -39,24 +43,41 @@ public class CardService {
     private final CardFileUploadService cardFileUploadService;
     private final CardMemberRepository cardMemberRepository;
     private final MemberRepository memberRepository;
+    private final WorkspaceRepository workspaceRepository;
+    private final SlackService slackService;
 
-    public CardResponseDto createCard(Long workListId, CardRequestDto cardRequestDto) {
-        WorkList workList = workListRepository.findById(workListId).orElseThrow(() -> new NotFoundException(ExceptionType.WORKLIST_NOT_FOUND));
+    public CardResponseDto createCard(Long workspaceId, Long workListId, CardRequestDto cardRequestDto) {
+
+        Workspace workspace = workspaceRepository.findByIdOrElseThrow(workspaceId);
+        WorkList workList = workListRepository.findByIdOrElseThrow(workListId);
+
         Card card = new Card(workList, cardRequestDto.getTitle(), cardRequestDto.getDescription(), cardRequestDto.getDueDate());
         Card cardSave = cardRepository.save(card);
+
+        slackService.callSlackApi(workList.getTitle(), cardSave.getTitle(), Type.CARD_ADD, workspace);
+
         return CardResponseDto.toDto(cardSave);
     }
 
-    public Page<CardResponseDto> findAllCards(Long workListId, String title, LocalDate dueDate, String description, Long cardUserId, Pageable pageable) {
+    public Page<CardResponseDto> findAllCards(Long workListId,
+                                              String title,
+                                              LocalDate dueDate,
+                                              String description,
+                                              Long cardUserId,
+                                              Pageable pageable) {
+
         Page<Card> cards = cardRepository.findAllCard(workListId, title, dueDate, description, cardUserId, pageable);
+
         return cards.map(CardResponseDto::toDto);
     }
 
     @Transactional(readOnly = true)
     public CardDetailsResponseDto findCard(Long workListId, Long id) {
+
         cardRepository.findWorkAndList(workListId, id);
         List<String> cardFileUrls = cardFileRepository.findByCardId(id);
         Card card = cardRepository.findCardWithDetails(id, workListId);
+
         if (card == null) {
             throw new NotFoundException(ExceptionType.CARD_DETAILS_NOT_FOUND);
         }
@@ -73,20 +94,36 @@ public class CardService {
     }
 
     @Transactional
-    public CardResponseDto updateCard(Long workListId, User user, Long id, CardRequestDto requestDto) {
+    public CardResponseDto updateCard(Long workspaceId, Long workListId, User user, Long id, CardRequestDto requestDto) {
+
+        Workspace workspace = workspaceRepository.findByIdOrElseThrow(workspaceId);
         Card card = cardRepository.findWorkAndList(workListId, id);
+        WorkList workList = workListRepository.findByIdOrElseThrow(workListId);
+
         validateCardOwner(card, user);
+
+        slackService.callSlackApi(workList.getTitle(), card.getTitle(), Type.CARD_UPDATE, workspace);
+
         card.addHistory(createCardHistory(card, "카드 수정", user.getId()));
         card.update(requestDto.getTitle(), requestDto.getDescription(), requestDto.getDueDate());
+
         return CardResponseDto.toDto(card);
     }
 
     @Transactional
-    public void deleteCard(Long workListId, User user, Long id) {
+    public void deleteCard(Long workspaceId, Long workListId, User user, Long id) {
+
+        Workspace workspace = workspaceRepository.findByIdOrElseThrow(workspaceId);
+        WorkList workList = workListRepository.findByIdOrElseThrow(workListId);
+
         Card card = cardRepository.findWorkAndList(workListId, id);
+
         cardFileRepository.deleteByCardId(id);
+
         validateCardOwner(card, user);
+
         cardRepository.delete(card);
+        slackService.callSlackApi(workList.getTitle(), card.getTitle(), Type.CARD_DELETE, workspace);
     }
 
     public String uploadFile(Long workListId, Long cardId, MultipartFile file, User user) {

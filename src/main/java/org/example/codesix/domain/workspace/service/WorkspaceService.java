@@ -2,6 +2,9 @@ package org.example.codesix.domain.workspace.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.codesix.domain.notification.enums.Type;
+import org.example.codesix.domain.notification.repository.NotificationRepository;
+import org.example.codesix.domain.notification.service.SlackService;
 import org.example.codesix.domain.user.entity.User;
 import org.example.codesix.domain.user.repository.UserRepository;
 import org.example.codesix.domain.workspace.dto.*;
@@ -12,6 +15,7 @@ import org.example.codesix.domain.workspace.repository.MemberRepository;
 import org.example.codesix.domain.workspace.repository.WorkspaceRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
@@ -23,13 +27,19 @@ public class WorkspaceService {
     private final WorkspaceRepository workspaceRepository;
     private final UserRepository userRepository;
     private final MemberRepository memberRepository;
+    private final SlackService slackService;
 
     public WorkspaceResponseDto createWorkspace(Long userId, WorkspaceRequestDto requestDto) {
+
         User creator = userRepository.findByIdOrElseThrow(userId);
+
         Workspace workspace = new Workspace(requestDto.getTitle(), requestDto.getDescription(), creator);
         Workspace savedWorkspace = workspaceRepository.save(workspace);
+
         Member member = new Member(workspace, creator,Part.WORKSPACE);
+
         memberRepository.save(member);
+
         return WorkspaceResponseDto.toDto(savedWorkspace);
     }
 
@@ -49,6 +59,13 @@ public class WorkspaceService {
         return WorkspaceResponseDto.toDto(workspace);
     }
 
+
+    @Transactional
+    public void updateNotificationSettings(Long id, WorkspaceNotificationRequestDto requestDto) {
+        Workspace workspace = findById(id);
+        workspace.updateNotificationSettings(requestDto.getOAuthToken(), requestDto.getNotificationChannel());
+    }
+
     @Transactional
     public void deleteWorkspace(Long id) {
         workspaceRepository.findByIdOrElseThrow(id);
@@ -60,6 +77,7 @@ public class WorkspaceService {
         Workspace workspace = findById(workspaceId);
         List<User> users = findByEmails(memberRequestDto.getEmails());
         List<Member> members = createMembers(workspace,users);
+        slackService.callSlackApi(workspace.getTitle(), "", Type.MEMBER_ADD, workspace);
         return saveMemberAndConvertToDto(members);
     }
 
@@ -76,9 +94,11 @@ public class WorkspaceService {
     }
 
     @Transactional
-    public void deleteMember(Long memberId) {
+    public void deleteMember(Long workspaceId, Long memberId) {
+        Workspace workspace = findById(workspaceId);
         Member member = memberRepository.findByIdOrElseThrow(memberId);
         memberRepository.delete(member);
+        slackService.callSlackApi(workspace.getTitle(), "", Type.MEMBER_DELETE, workspace);
     }
 
     public Workspace findById(Long id) {
