@@ -16,7 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/boards/{boardId}/lists")
+@RequestMapping("/api/boards/{boardId}/workLists")
 @RequiredArgsConstructor
 public class WorkListController {
 
@@ -31,30 +31,21 @@ public class WorkListController {
         return ResponseEntity.status(HttpStatus.CREATED).body(worklistResponseDto);
 
     }
-    @GetMapping
-    public ResponseEntity<WorkListResponseDto> getWorkList(@PathVariable Long boardId) {
-        WorkListResponseDto worklistresponseDto = worklistservice.getWorkList(boardId);
+    @GetMapping("/{workListId}")
+    public ResponseEntity<WorkListResponseDto> getWorkList(@PathVariable Long workListId) {
+        WorkListResponseDto worklistresponseDto = worklistservice.getWorkList(workListId);
         return ResponseEntity.ok(worklistresponseDto);
     }
-    @PatchMapping
-    public ResponseEntity<WorkListResponseDto> updateList(@PathVariable Long boardId,
-                                                          @RequestBody WorkListRequestDto
-                                                          dto){
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String userName = auth.getName();
-        Long userId = userRepository.findByEmailOrElseThrow(userName).getId();
-        Member member = memberRepository.findByIdOrElseThrow(userId);
-        Part memberPart = member.getPart();
-        if(Part.READ.equals(memberPart)){
-            throw new Error("사용자를 찾을 수 없습니다.");
-        }
-        WorkListResponseDto worklistResponseDto = worklistservice.updateList(boardId, dto);
+    @PatchMapping("/{workListId}")
+    public ResponseEntity<WorkListResponseDto> updateWorkList(@PathVariable Long workListId,
+                                                          @RequestBody WorkListRequestDto dto) {
+
+        WorkListResponseDto worklistResponseDto = worklistservice.updateList(workListId, dto);
         return ResponseEntity.ok(worklistResponseDto);
     }
-    @DeleteMapping
-    public ResponseEntity<Void> deleteList(@PathVariable Long listId) {
-        worklistservice.deleteList(listId);
+    @DeleteMapping("/{workListId}")
+    public ResponseEntity<Void> deleteWorkList(@PathVariable Long workListId) {
+        worklistservice.deleteList(workListId);
         return ResponseEntity.noContent().build();
     }
-
 }
