@@ -4,11 +4,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.codesix.domain.card.dto.*;
 import org.example.codesix.domain.card.entity.CardFile;
 import org.example.codesix.domain.card.entity.CardHistory;
+import org.example.codesix.domain.card.entity.CardMember;
 import org.example.codesix.domain.card.repository.CardFileRepository;
+import org.example.codesix.domain.card.repository.CardMemberRepository;
 import org.example.codesix.domain.comment.dto.CommentResponseDto;
 import org.example.codesix.domain.user.entity.User;
 import org.example.codesix.domain.worklist.entity.WorkList;
 import org.example.codesix.domain.worklist.repository.WorkListRepository;
+import org.example.codesix.domain.workspace.entity.Member;
+import org.example.codesix.domain.workspace.repository.MemberRepository;
 import org.example.codesix.global.exception.ForbiddenException;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +37,8 @@ public class CardService {
     private final WorkListRepository workListRepository;
     private final CardFileRepository cardFileRepository;
     private final CardFileUploadService cardFileUploadService;
+    private final CardMemberRepository cardMemberRepository;
+    private final MemberRepository memberRepository;
 
     public CardResponseDto createCard(Long workListId, CardRequestDto cardRequestDto) {
         WorkList workList = workListRepository.findById(workListId).orElseThrow(() -> new NotFoundException(ExceptionType.WORKLIST_NOT_FOUND));
@@ -48,7 +54,7 @@ public class CardService {
 
     @Transactional(readOnly = true)
     public CardDetailsResponseDto findCard(Long workListId, Long id) {
-        cardRepository.findWorkAndList(workListId,id);
+        cardRepository.findWorkAndList(workListId, id);
         List<String> cardFileUrls = cardFileRepository.findByCardId(id);
         Card card = cardRepository.findCardWithDetails(id, workListId);
         if (card == null) {
@@ -63,30 +69,29 @@ public class CardService {
                 .map(CommentResponseDto::toDto)
                 .toList();
 
-        // 댓글 데이터를 포함하여 CardResponseDto 반환
-        return CardDetailsResponseDto.toDtoWithComments(card,userIds, comments, cardFileUrls);
+        return CardDetailsResponseDto.toDtoWithComments(card, userIds, comments, cardFileUrls);
     }
 
     @Transactional
     public CardResponseDto updateCard(Long workListId, User user, Long id, CardRequestDto requestDto) {
-        Card card = cardRepository.findWorkAndList(workListId,id);
+        Card card = cardRepository.findWorkAndList(workListId, id);
         validateCardOwner(card, user);
         card.addHistory(createCardHistory(card, "카드 수정", user.getId()));
         card.update(requestDto.getTitle(), requestDto.getDescription(), requestDto.getDueDate());
         return CardResponseDto.toDto(card);
     }
+
     @Transactional
     public void deleteCard(Long workListId, User user, Long id) {
-        Card card = cardRepository.findWorkAndList(workListId,id);
+        Card card = cardRepository.findWorkAndList(workListId, id);
         cardFileRepository.deleteByCardId(id);
         validateCardOwner(card, user);
         cardRepository.delete(card);
     }
 
     public String uploadFile(Long workListId, Long cardId, MultipartFile file, User user) {
-        Card card = cardRepository.findWorkAndList(workListId,cardId);
+        Card card = cardRepository.findWorkAndList(workListId, cardId);
         validateCardOwner(card, user);
-
         CardFile cardFile;
         try {
             cardFile = cardFileUploadService.uploadFileAndSaveMetadata(card, file);
@@ -98,8 +103,8 @@ public class CardService {
         return cardFile.getUrl();
     }
 
-    public void deleteFile(Long workListId,Long cardId, Long fileId, User user) {
-        cardRepository.findWorkAndList(workListId,cardId);
+    public void deleteFile(Long workListId, Long cardId, Long fileId, User user) {
+        cardRepository.findWorkAndList(workListId, cardId);
         CardFile cardFile = cardFileRepository.findById(fileId)
                 .orElseThrow(() -> new NotFoundException(ExceptionType.FILE_NOT_FOUND));
         validateCardOwner(cardFile.getCard(), user);
@@ -124,7 +129,7 @@ public class CardService {
     }
 
     public List<CardHistoryResponseDto> getHistoryByCardId(Long workListId, Long cardId) {
-        cardRepository.findWorkAndList(workListId,cardId);
+        cardRepository.findWorkAndList(workListId, cardId);
         List<CardHistory> history = cardRepository.findHistoryByCardId(cardId);
         return history.stream()
                 .map(CardHistoryResponseDto::toDto)
@@ -132,11 +137,33 @@ public class CardService {
     }
 
     public List<CardFileResponseDto> findCardFiles(Long workListId, Long cardId) {
-        cardRepository.findWorkAndList(workListId,cardId);
-        List<CardFile> cardFiles =  cardRepository.findByWorkListAndCard(workListId,cardId);
+        cardRepository.findWorkAndList(workListId, cardId);
+        List<CardFile> cardFiles = cardRepository.findByWorkListAndCard(workListId, cardId);
         if (cardFiles.isEmpty()) {
             throw new NotFoundException(ExceptionType.FILE_NOT_FOUND);
         }
         return cardFiles.stream().map(CardFileResponseDto::toDto).toList();
+    }
+
+    public void createCardMember(Long workspaceId, Long workListId, Long cardId, CardMemberRequestDto requestDto) {
+        Card card = cardRepository.findWorkAndList(workListId, cardId);
+        Member member = memberRepository.findByIdOrElseThrow(requestDto.getMemberId());
+        if (!member.getWorkspace().getId().equals(workspaceId)) {
+            throw new ForbiddenException(ExceptionType.CARD_MEMBER_NOT_IN_WORKSPACE);
+        }
+        CardMember cardMember = new CardMember();
+        cardMember.setCard(card);
+        cardMember.setMember(member);
+        cardMemberRepository.save(cardMember);
+    }
+
+    public List<Long> findAllCardMembers(Long workspaceId, Long workListId, Long cardId) {
+        cardRepository.findWorkAndList(workListId, cardId);
+        return cardMemberRepository.findCardMemberUserIds(workspaceId, workListId, cardId);
+    }
+
+    public void deleteCardMember(Long workListId, Long cardId, Long cardMemberId) {
+        cardRepository.findWorkAndList(workListId, cardId);
+        cardMemberRepository.deleteById(cardMemberId);
     }
 }

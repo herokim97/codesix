@@ -65,6 +65,4 @@ public class Card extends BaseEntity {
     public Collection<Comment> getComments() {
         return comments;
     }
-
-
 }
