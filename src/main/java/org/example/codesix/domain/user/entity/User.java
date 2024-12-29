@@ -2,6 +2,7 @@ package org.example.codesix.domain.user.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 import org.example.codesix.domain.user.enums.UserRole;
 import org.example.codesix.domain.user.enums.UserStatus;
 import org.example.codesix.global.entity.BaseEntity;

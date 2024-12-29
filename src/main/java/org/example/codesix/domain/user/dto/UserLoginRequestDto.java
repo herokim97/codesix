@@ -20,10 +20,8 @@ public class UserLoginRequestDto {
     @NotBlank(message = "패스워드는 필수값 입니다.")
     private String password;
 
-    private final UserRole role;
 
-    public UserLoginRequestDto(UserRole role, String password, String email) {
-        this.role = role;
+    public UserLoginRequestDto(String password, String email) {
         this.password = password;
         this.email = email;
     }
