@@ -15,8 +15,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/api/boards/{boardId}/workLists")
+@RequestMapping("/api/workspaces/{workspaceId}/boards/{boardId}/workLists")
 @RequiredArgsConstructor
 public class WorkListController {
 
@@ -36,6 +38,12 @@ public class WorkListController {
         WorkListResponseDto worklistresponseDto = worklistservice.getWorkList(workListId);
         return ResponseEntity.ok(worklistresponseDto);
     }
+    @GetMapping
+    public ResponseEntity<List<WorkListResponseDto>>getWorkLists(@PathVariable Long boardId){
+        List<WorkListResponseDto> workListsResponseDto = worklistservice.getWorkLists(boardId);
+        return ResponseEntity.ok(workListsResponseDto);
+    }
+
     @PatchMapping("/{workListId}")
     public ResponseEntity<WorkListResponseDto> updateWorkList(@PathVariable Long workListId,
                                                           @RequestBody WorkListRequestDto dto) {

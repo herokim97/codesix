@@ -29,6 +29,7 @@ public class BoardService {
 
         return new BoardResponseDto(board.getId(), board.getTitle(), board.getBackgroundColor(), board.getBackgroundImage());
     }
+    @Transactional
     public List<BoardResponseDto>getBoards(Long workspaceId){
         List<Board> boards = boardRepository.findByWorkspaceId(workspaceId);
         return boards.stream()
