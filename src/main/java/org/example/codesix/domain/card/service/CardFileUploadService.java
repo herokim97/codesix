@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.example.codesix.domain.card.entity.Card;
 import org.example.codesix.domain.card.entity.CardFile;
 import org.example.codesix.domain.card.model.Extension;
+import org.example.codesix.global.exception.BadValueException;
+import org.example.codesix.global.exception.ExceptionType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -50,11 +52,11 @@ public class CardFileUploadService {
         String extension = getExtension(file.getOriginalFilename());
         // Enum으로 확장자 검사
         if (!Extension.isValidExtension(extension)) {
-            throw new IllegalArgumentException("허용되지 않는 파일 형식입니다: " + extension);
+            throw new BadValueException(ExceptionType.UNSUPPORTED_FILE_TYPE);
         }
 
         if (file.getSize() > MAX_FILE_SIZE) {
-            throw new IllegalArgumentException("파일 크기가 5MB를 초과할 수 없습니다.");
+            throw new BadValueException(ExceptionType.FILE_SIZE_EXCEEDED);
         }
     }
 
