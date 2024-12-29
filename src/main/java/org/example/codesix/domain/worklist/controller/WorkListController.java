@@ -38,11 +38,11 @@ public class WorkListController {
         WorkListResponseDto worklistresponseDto = worklistservice.getWorkList(workListId);
         return ResponseEntity.ok(worklistresponseDto);
     }
-    @GetMapping
-    public ResponseEntity<List<WorkListResponseDto>>getWorkLists(@PathVariable Long boardId){
-        List<WorkListResponseDto> workListsResponseDto = worklistservice.getWorkLists(boardId);
-        return ResponseEntity.ok(workListsResponseDto);
-    }
+//    @GetMapping
+//    public ResponseEntity<List<WorkListResponseDto>>getWorkLists(@PathVariable Long boardId){
+//        List<WorkListResponseDto> workListsResponseDto = worklistservice.getWorkLists(boardId);
+//        return ResponseEntity.ok(workListsResponseDto);
+//    }
 
     @PatchMapping("/{workListId}")
     public ResponseEntity<WorkListResponseDto> updateWorkList(@PathVariable Long workListId,
