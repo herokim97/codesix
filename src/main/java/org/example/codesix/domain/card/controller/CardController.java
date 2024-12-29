@@ -3,7 +3,6 @@ package org.example.codesix.domain.card.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.codesix.domain.card.dto.*;
-import org.example.codesix.domain.card.entity.CardFile;
 import org.example.codesix.domain.card.service.CardService;
 import org.example.codesix.domain.user.entity.User;
 import org.example.codesix.global.auth.UserDetailsImpl;

@@ -2,7 +2,6 @@ package org.example.codesix.domain.comment.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.example.codesix.domain.card.entity.CardMember;
 import org.example.codesix.domain.comment.dto.CommentRequestDto;
 import org.example.codesix.domain.comment.dto.CommentResponseDto;
 import org.example.codesix.domain.comment.service.CommentService;
@@ -10,10 +9,7 @@ import org.example.codesix.domain.user.entity.User;
 import org.example.codesix.global.auth.UserDetailsImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

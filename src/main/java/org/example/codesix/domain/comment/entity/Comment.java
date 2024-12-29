@@ -7,8 +7,6 @@ import org.example.codesix.domain.card.entity.Card;
 import org.example.codesix.domain.card.entity.CardMember;
 import org.example.codesix.global.entity.BaseEntity;
 
-import java.util.List;
-
 @Entity
 @Getter
 @Setter

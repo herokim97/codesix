@@ -1,6 +1,5 @@
 package org.example.codesix.domain.card.repository;
 
-import org.example.codesix.domain.card.dto.CardFileResponseDto;
 import org.example.codesix.domain.card.entity.Card;
 import org.example.codesix.domain.card.entity.CardFile;
 import org.example.codesix.domain.card.entity.CardHistory;
@@ -12,7 +11,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.security.core.parameters.P;
 
 import java.time.LocalDate;
 import java.util.List;
