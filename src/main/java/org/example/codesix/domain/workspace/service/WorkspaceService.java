@@ -13,6 +13,8 @@ import org.example.codesix.domain.workspace.entity.Workspace;
 import org.example.codesix.domain.workspace.enums.Part;
 import org.example.codesix.domain.workspace.repository.MemberRepository;
 import org.example.codesix.domain.workspace.repository.WorkspaceRepository;
+import org.example.codesix.global.exception.BadValueException;
+import org.example.codesix.global.exception.ExceptionType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -76,7 +78,12 @@ public class WorkspaceService {
     public List<MemberResponseDto> addMember(Long workspaceId, MemberRequestDto memberRequestDto) {
         Workspace workspace = findById(workspaceId);
         List<User> users = findByEmails(memberRequestDto.getEmails());
+
+        List<Long> userIds = users.stream().map(User::getId).toList();
+        userIds.forEach(userId -> memberRepository.ifExistsByUserIdAndWorkspaceThenThrow(userId, workspace));
+
         List<Member> members = createMembers(workspace,users);
+
         slackService.callSlackApi(workspace.getTitle(), "", Type.MEMBER_ADD, workspace);
         return saveMemberAndConvertToDto(members);
     }
