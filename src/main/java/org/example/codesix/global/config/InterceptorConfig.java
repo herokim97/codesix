@@ -15,9 +15,9 @@ public class InterceptorConfig implements WebMvcConfigurer {
     private static final String[] PART_WORKSPACE_PATH_PATTERNS = {"/api/workspaces/*",
                                                                   "/api/workspaces",
                                                                   "/api/workspaces/{workspacesId}/members/**"};
-    private static final String[] WORKSPACE_PATH_PATTERNS = { "/api/workspaces/{workspaceId}/**"};
-    private static final String[] BOARD_PATH_PATTERNS = { "/api/boards/{boardId}/**"};
-    private static final String[] WORKLIST_PATH_PATTERNS = { "/api/workLists/{workListId}/**"};
+    private static final String[] WORKSPACE_PATH_PATTERNS = {"/api/workspaces/{workspaceId}/**"};
+    private static final String[] BOARD_PATH_PATTERNS = {"/api/boards/{boardId}/**"};
+    private static final String[] WORKLIST_PATH_PATTERNS = {"/api/workLists/{workListId}/**"};
     private static final String[] CARD_PATH_PATTERNS = { "/api/cards/{cardId}/**"};
 
     private final PartWorkspaceInterceptor partWorkspaceInterceptor;

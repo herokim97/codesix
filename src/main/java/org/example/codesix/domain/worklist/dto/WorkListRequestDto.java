@@ -9,7 +9,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class WorkListRequestDto {
 
-    private Long id;
     private String title;
-    private String content;
 }
