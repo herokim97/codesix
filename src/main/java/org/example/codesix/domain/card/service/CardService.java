@@ -186,7 +186,7 @@ public class CardService {
         Card card = cardRepository.findWorkAndList(workListId, cardId);
         Member member = memberRepository.findByIdOrElseThrow(requestDto.getMemberId());
         if (!member.getWorkspace().getId().equals(workspaceId)) {
-            throw new ForbiddenException(ExceptionType.CARD_MEMBER_NOT_IN_WORKSPACE);
+            throw new ForbiddenException(ExceptionType.MEMBER_NOT_IN_WORKSPACE);
         }
         CardMember cardMember = new CardMember();
         cardMember.setCard(card);

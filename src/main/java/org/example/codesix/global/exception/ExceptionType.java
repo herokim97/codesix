@@ -22,7 +22,8 @@ public enum ExceptionType {
     CARD_DETAILS_NOT_FOUND(HttpStatus.NOT_FOUND,"해당 카드의 댓글이나 파일등의 정보를 찾을 수 없습니다."),
     UNSUPPORTED_FILE_TYPE(HttpStatus.BAD_REQUEST, "허용되지 않는 파일 형식입니다."),
     FILE_SIZE_EXCEEDED(HttpStatus.BAD_REQUEST,"파일 크기가 5MB를 초과할 수 없습니다"),
-    CARD_MEMBER_NOT_IN_WORKSPACE(HttpStatus.FORBIDDEN,"해당 워크스페이스에 속해있지 않은 멤버입니다.");
+    CARD_MEMBER_NOT_IN_WORKSPACE(HttpStatus.FORBIDDEN,"해당 워크스페이스에 속해있지 않은 멤버입니다."),
+    MEMBER_NOT_IN_WORKSPACE(HttpStatus.NOT_FOUND,"해당 워크스페이스 멤버를 찾을 수 없습니다");
 
 
     private final HttpStatus status;
