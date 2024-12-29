@@ -19,19 +19,21 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/workList/{workListId}/cards")
+@RequestMapping("/api/workSpace/{workSpaceId}/workList/{workListId}/cards")
 public class CardController {
     private final CardService cardService;
 
     @PostMapping
-    public ResponseEntity<CardResponseDto> createCard(@PathVariable Long workListId,
+    public ResponseEntity<CardResponseDto> createCard(@PathVariable Long workSpaceId,
+                                                      @PathVariable Long workListId,
                                                       @Valid @RequestBody CardRequestDto cardRequestDto,
                                                       @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
         return ResponseEntity.status(HttpStatus.CREATED).body(cardService.createCard(workListId, cardRequestDto));
     }
 
     @GetMapping
-    public ResponseEntity<Page<CardResponseDto>> findAllCards(@PathVariable Long workListId,
+    public ResponseEntity<Page<CardResponseDto>> findAllCards(@PathVariable Long workSpaceId,
+                                                              @PathVariable Long workListId,
                                                               @RequestParam(value = "title", required = false) String title,
                                                               @RequestParam(value = "dueDate", required = false) LocalDate dueDate,
                                                               @RequestParam(value = "description", required = false) String description,
@@ -42,14 +44,16 @@ public class CardController {
     }
 
     @GetMapping("/{cardId}")
-    public ResponseEntity<CardDetailsResponseDto> findCard(@PathVariable Long workListId,
+    public ResponseEntity<CardDetailsResponseDto> findCard(@PathVariable Long workSpaceId,
+                                                           @PathVariable Long workListId,
                                                            @PathVariable Long cardId) {
         CardDetailsResponseDto cardDetailsResponseDto = cardService.findCard(workListId, cardId);
         return ResponseEntity.status(HttpStatus.OK).body(cardDetailsResponseDto);
     }
 
     @PatchMapping("/{cardId}")
-    public ResponseEntity<CardResponseDto> updateCard(@PathVariable Long workListId,
+    public ResponseEntity<CardResponseDto> updateCard(@PathVariable Long workSpaceId,
+                                                      @PathVariable Long workListId,
                                                       @PathVariable Long cardId,
                                                       @Valid @RequestBody CardRequestDto cardRequestDto,
                                                       @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
@@ -58,7 +62,8 @@ public class CardController {
     }
 
     @DeleteMapping("/{cardId}")
-    public ResponseEntity<String> deleteCard(@PathVariable Long workListId,
+    public ResponseEntity<String> deleteCard(@PathVariable Long workSpaceId,
+                                             @PathVariable Long workListId,
                                              @PathVariable Long cardId,
                                              @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
         User user = userDetailsImpl.getUser();
@@ -67,21 +72,24 @@ public class CardController {
     }
 
     @GetMapping("/{cardId}/details")
-    public ResponseEntity<List<CardHistoryResponseDto>> findCardDetails(@PathVariable Long workListId,
+    public ResponseEntity<List<CardHistoryResponseDto>> findCardDetails(@PathVariable Long workSpaceId,
+                                                                        @PathVariable Long workListId,
                                                                         @PathVariable Long cardId){
         List<CardHistoryResponseDto> history = cardService.getHistoryByCardId(workListId,cardId);
         return ResponseEntity.status(HttpStatus.OK).body(history);
     }
 
     @GetMapping("/{cardId}/files")
-    public ResponseEntity<List<CardFileResponseDto>> findCardFiles(@PathVariable Long workListId,
+    public ResponseEntity<List<CardFileResponseDto>> findCardFiles(@PathVariable Long workSpaceId,
+                                                                   @PathVariable Long workListId,
                                                   @PathVariable Long cardId) {
         List<CardFileResponseDto> cardFileResponseDto = cardService.findCardFiles(workListId,cardId);
         return ResponseEntity.status(HttpStatus.OK).body(cardFileResponseDto);
     }
 
     @PostMapping("/{cardId}/files")
-    public ResponseEntity<String> uploadFile(@PathVariable Long workListId,
+    public ResponseEntity<String> uploadFile(@PathVariable Long workSpaceId,
+                                             @PathVariable Long workListId,
                                              @PathVariable Long cardId,
                                              @RequestParam("file") MultipartFile file,
                                              @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
@@ -91,7 +99,8 @@ public class CardController {
     }
 
     @DeleteMapping("/{cardId}/files/{fileId}")
-    public ResponseEntity<String> deleteFile(@PathVariable Long workListId,
+    public ResponseEntity<String> deleteFile(@PathVariable Long workSpaceId,
+                                             @PathVariable Long workListId,
                                              @PathVariable Long cardId,
                                              @PathVariable Long fileId,
                                              @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
