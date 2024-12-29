@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -23,36 +25,37 @@ public class WorkListService {
 
 
     @Transactional
-    public WorkListResponseDto createWorkList(@PathVariable Long boardId,
-                                              @RequestBody WorkListRequestDto dto) {
+    public WorkListResponseDto createWorkList(Long boardId,
+                                              WorkListRequestDto dto) {
         Board board = boardRepository.findByIdOrElseThrow(boardId);
-        WorkList workList = new WorkList(board,dto.getTitle(),dto.getContent());
+        WorkList workList = new WorkList(board, dto.getTitle());
         workListRepository.save(workList);
-        return new WorkListResponseDto(workList.getId(),workList.getTitle(),workList.getContent(),
-                workList.getSequence());
+        return WorkListResponseDto.toDto(workList);
     }
 
 
     @Transactional
-    public WorkListResponseDto getWorkList(@PathVariable Long boardId) {
-        workListRepository.findByIdOrElseThrow(boardId);
-        return new WorkListResponseDto();
+    public WorkListResponseDto getWorkList(Long workListId) {
+        WorkList workList = workListRepository.findByIdOrElseThrow(workListId);
+        return WorkListResponseDto.toDto(workList);
 
     }
+
     @Transactional
-    public WorkListResponseDto updateList(@PathVariable Long boardId,
-                                              @RequestBody WorkListRequestDto dto) {
-        WorkList worklist = workListRepository.findByIdOrElseThrow(boardId);
-        worklist.updateList(dto.getId(),dto.getTitle());
+    public WorkListResponseDto updateList(Long workListId,
+                                          WorkListRequestDto dto) {
+        WorkList worklist = workListRepository.findByIdOrElseThrow(workListId);
+        worklist.updateList(dto.getTitle());
         WorkList savedWorkList = workListRepository.save(worklist);
-        return new WorkListResponseDto(savedWorkList.getId(),savedWorkList.getTitle(), savedWorkList.getContent(),
-                savedWorkList.getSequence());
+        return new WorkListResponseDto(savedWorkList.getId(),
+                                       savedWorkList.getTitle(),
+                                       savedWorkList.getSequence());
     }
-    @Transactional
-    public void deleteList(@PathVariable Long listId) {
-        WorkList worklist = workListRepository.findByIdOrElseThrow(listId);
-        workListRepository.delete(worklist);
 
+    @Transactional
+    public void deleteList(Long workListId) {
+        WorkList worklist = workListRepository.findByIdOrElseThrow(workListId);
+        workListRepository.delete(worklist);
 
     }
 }

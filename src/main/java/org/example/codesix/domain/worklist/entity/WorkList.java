@@ -17,10 +17,9 @@ public class WorkList extends BaseEntity {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
+
     @Column(nullable = false)
     private String title;
-
-    private String content;
 
     private Integer sequence = 1;
 
@@ -31,14 +30,14 @@ public class WorkList extends BaseEntity {
     @OneToMany(mappedBy = "workList", cascade = CascadeType.REMOVE)
     private List<Card> cards = new ArrayList<>();
 
-    public WorkList(Board board, String title, String content) {
+    public WorkList(Board board, String title) {
         this.board = board;
         this.title = title;
-        this.content = content;
     }
-    public void updateList(Long id, String title){
-        this.id = id;
+
+    public void updateList(String title){
         this.title = title;
     }
+
 
 }
