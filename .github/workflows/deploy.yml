@@ -33,7 +33,7 @@ jobs:
           username: ec2-user
           key: ${{ secrets.SSH_KEY }}
           port: 22
-          source: "./build/libs/*.jar"
+          source: "./build/libs/codesix-0.0.1-snapshot.jar"
           target: "~"
           strip_components: 2
 
@@ -53,6 +53,4 @@ jobs:
                 kill -9 $pid
               fi
             done
-            echo "nohup java -jar ~/*.jar > ~/app.log 2>&1 &" | at now
-
-          # cicd test 2
+            echo "nohup java -jar ~/codesix-0.0.1-snapshot.jar > ~/app.log 2>&1 &" | at now
