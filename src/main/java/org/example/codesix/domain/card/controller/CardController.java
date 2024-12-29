@@ -19,19 +19,19 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/workSpace/{workSpaceId}/workList/{workListId}/cards")
+@RequestMapping("/api/workspace/{workspaceId}/workList/{workListId}/cards")
 public class CardController {
     private final CardService cardService;
 
     @PostMapping
-    public ResponseEntity<CardResponseDto> createCard(@PathVariable Long workSpaceId,
+    public ResponseEntity<CardResponseDto> createCard(@PathVariable Long workspaceId,
                                                       @PathVariable Long workListId,
                                                       @Valid @RequestBody CardRequestDto cardRequestDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(cardService.createCard(workListId, cardRequestDto));
     }
 
     @GetMapping
-    public ResponseEntity<Page<CardResponseDto>> findAllCards(@PathVariable Long workSpaceId,
+    public ResponseEntity<Page<CardResponseDto>> findAllCards(@PathVariable Long workspaceId,
                                                               @PathVariable Long workListId,
                                                               @RequestParam(value = "title", required = false) String title,
                                                               @RequestParam(value = "dueDate", required = false) LocalDate dueDate,
@@ -43,7 +43,7 @@ public class CardController {
     }
 
     @GetMapping("/{cardId}")
-    public ResponseEntity<CardDetailsResponseDto> findCard(@PathVariable Long workSpaceId,
+    public ResponseEntity<CardDetailsResponseDto> findCard(@PathVariable Long workspaceId,
                                                            @PathVariable Long workListId,
                                                            @PathVariable Long cardId) {
         CardDetailsResponseDto cardDetailsResponseDto = cardService.findCard(workListId, cardId);
@@ -51,7 +51,7 @@ public class CardController {
     }
 
     @PatchMapping("/{cardId}")
-    public ResponseEntity<CardResponseDto> updateCard(@PathVariable Long workSpaceId,
+    public ResponseEntity<CardResponseDto> updateCard(@PathVariable Long workspaceId,
                                                       @PathVariable Long workListId,
                                                       @PathVariable Long cardId,
                                                       @Valid @RequestBody CardRequestDto cardRequestDto,
@@ -61,7 +61,7 @@ public class CardController {
     }
 
     @DeleteMapping("/{cardId}")
-    public ResponseEntity<String> deleteCard(@PathVariable Long workSpaceId,
+    public ResponseEntity<String> deleteCard(@PathVariable Long workspaceId,
                                              @PathVariable Long workListId,
                                              @PathVariable Long cardId,
                                              @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
@@ -71,7 +71,7 @@ public class CardController {
     }
 
     @GetMapping("/{cardId}/details")
-    public ResponseEntity<List<CardHistoryResponseDto>> findCardDetails(@PathVariable Long workSpaceId,
+    public ResponseEntity<List<CardHistoryResponseDto>> findCardDetails(@PathVariable Long workspaceId,
                                                                         @PathVariable Long workListId,
                                                                         @PathVariable Long cardId){
         List<CardHistoryResponseDto> history = cardService.getHistoryByCardId(workListId,cardId);
@@ -79,7 +79,7 @@ public class CardController {
     }
 
     @GetMapping("/{cardId}/files")
-    public ResponseEntity<List<CardFileResponseDto>> findCardFiles(@PathVariable Long workSpaceId,
+    public ResponseEntity<List<CardFileResponseDto>> findCardFiles(@PathVariable Long workspaceId,
                                                                    @PathVariable Long workListId,
                                                   @PathVariable Long cardId) {
         List<CardFileResponseDto> cardFileResponseDto = cardService.findCardFiles(workListId,cardId);
@@ -87,7 +87,7 @@ public class CardController {
     }
 
     @PostMapping("/{cardId}/files")
-    public ResponseEntity<String> uploadFile(@PathVariable Long workSpaceId,
+    public ResponseEntity<String> uploadFile(@PathVariable Long workspaceId,
                                              @PathVariable Long workListId,
                                              @PathVariable Long cardId,
                                              @RequestParam("file") MultipartFile file,
@@ -98,7 +98,7 @@ public class CardController {
     }
 
     @DeleteMapping("/{cardId}/files/{fileId}")
-    public ResponseEntity<String> deleteFile(@PathVariable Long workSpaceId,
+    public ResponseEntity<String> deleteFile(@PathVariable Long workspaceId,
                                              @PathVariable Long workListId,
                                              @PathVariable Long cardId,
                                              @PathVariable Long fileId,
@@ -109,24 +109,24 @@ public class CardController {
     }
 
     @PostMapping("/{cardId}/cardMembers")
-    public ResponseEntity<String> CreateMember(@PathVariable Long workSpaceId,
+    public ResponseEntity<String> CreateMember(@PathVariable Long workspaceId,
                                                @PathVariable Long workListId,
                                                @PathVariable Long cardId,
                                                @RequestBody CardMemberRequestDto cardMemberRequestDto){
-        cardService.createCardMember(workSpaceId,workListId,cardId,cardMemberRequestDto);
+        cardService.createCardMember(workspaceId,workListId,cardId,cardMemberRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body("카드멤버가 추가되었습니다.");
     }
 
     @GetMapping("/{cardId}/cardMembers")
-    public ResponseEntity<List<Long>> findAllCardMembers(@PathVariable Long workSpaceId,
+    public ResponseEntity<List<Long>> findAllCardMembers(@PathVariable Long workspaceId,
                                                               @PathVariable Long workListId,
                                                               @PathVariable Long cardId){
-        List <Long> userIds = cardService.findAllCardMembers(workSpaceId,workListId,cardId);
+        List <Long> userIds = cardService.findAllCardMembers(workspaceId,workListId,cardId);
         return ResponseEntity.status(HttpStatus.OK).body(userIds);
     }
 
     @DeleteMapping("/{cardId}/cardMembers/{cardMemberId}")
-    public ResponseEntity<String> deleteCardMember(@PathVariable Long workSpaceId,
+    public ResponseEntity<String> deleteCardMember(@PathVariable Long workspaceId,
                                                    @PathVariable Long workListId,
                                                    @PathVariable Long cardId,
                                                    @PathVariable Long cardMemberId){
