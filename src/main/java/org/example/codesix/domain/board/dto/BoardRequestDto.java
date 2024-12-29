@@ -15,6 +15,5 @@ public class BoardRequestDto {
 
     private String backgroundColor;
 
-    private String backgroundImage;
 
 }
