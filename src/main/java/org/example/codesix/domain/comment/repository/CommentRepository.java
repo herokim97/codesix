@@ -4,8 +4,6 @@ import org.example.codesix.domain.comment.entity.Comment;
 import org.example.codesix.global.exception.ExceptionType;
 import org.example.codesix.global.exception.NotFoundException;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.List;
 

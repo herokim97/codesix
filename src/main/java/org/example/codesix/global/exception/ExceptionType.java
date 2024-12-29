@@ -17,7 +17,9 @@ public enum ExceptionType {
     WRONG_PASSWORD(HttpStatus.UNAUTHORIZED, "비밀번호가 잘못되었습니다."),
     CARD_MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND,"해당 카드멤버의 정보를 찾을 수 없습니다." ),
     FORBIDDEN_ACTION(HttpStatus.FORBIDDEN, "권한이 없습니다."),
-    LIST_OR_CARD_NOT_FOUND(HttpStatus.NOT_FOUND, "리스트나 카드의 정보를 찾을 수 없습니다." );
+    LIST_OR_CARD_NOT_FOUND(HttpStatus.NOT_FOUND, "리스트나 카드의 정보를 찾을 수 없습니다." ),
+    FILE_NOT_FOUND(HttpStatus.NOT_FOUND,"해당 파일의 정보를 찾을 수 없습니다"),
+    CARD_DETAILS_NOT_FOUND(HttpStatus.NOT_FOUND,"해당 카드의 댓글이나 파일등의 정보를 찾을 수 없습니다." );
 
     private final HttpStatus status;
     private final String message;

@@ -22,7 +22,7 @@ public class Card extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "work_list_id", nullable = false)
     private WorkList workList;
 
@@ -65,4 +65,6 @@ public class Card extends BaseEntity {
     public Collection<Comment> getComments() {
         return comments;
     }
+
+
 }

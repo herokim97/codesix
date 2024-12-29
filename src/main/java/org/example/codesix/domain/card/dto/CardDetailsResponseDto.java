@@ -24,9 +24,10 @@ public class CardDetailsResponseDto {
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
     private List<Long> userIds;
-
+    private List<String> cardFileUrls;
     private List<CommentResponseDto> comments;
-    public static CardDetailsResponseDto toDtoWithComments(Card card, List<Long> userIds,List<CommentResponseDto> comments) {
+
+    public static CardDetailsResponseDto toDtoWithComments(Card card, List<Long> userIds,List<CommentResponseDto> comments,List<String> cardFileUrls) {
         return new CardDetailsResponseDto(
                 card.getId(),
                 card.getWorkList().getId(),
@@ -36,6 +37,7 @@ public class CardDetailsResponseDto {
                 card.getCreatedAt(),
                 card.getModifiedAt(),
                 new ArrayList<>(new HashSet<>(userIds)),
+                cardFileUrls,
                 comments
 
         );
