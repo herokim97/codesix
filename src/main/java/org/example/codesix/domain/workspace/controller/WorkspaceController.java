@@ -1,5 +1,6 @@
 package org.example.codesix.domain.workspace.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.codesix.domain.workspace.dto.*;
 import org.example.codesix.domain.workspace.service.WorkspaceService;
@@ -20,71 +21,83 @@ public class WorkspaceController {
 
     //워크스페이스 생성 API
     @PostMapping()
-    public ResponseEntity<WorkspaceResponseDto> createWorkspace(@RequestBody WorkspaceRequestDto requestDto,
+    public ResponseEntity<WorkspaceResponseDto> createWorkspace(@Valid @RequestBody WorkspaceRequestDto requestDto,
                                                                 @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+
         return ResponseEntity.status(HttpStatus.CREATED).body(workspaceService.createWorkspace(userDetailsImpl.getUser().getId(), requestDto));
     }
 
     //워크스페이스 단건 조회 API
     @GetMapping("/{id}")
     public ResponseEntity<WorkspaceResponseDto> findWorkspace(@PathVariable Long id) {
+
         return ResponseEntity.ok().body(workspaceService.findWorkspace(id));
     }
 
     //워크스페이스 전체 조회 API
     @GetMapping
     public ResponseEntity<List<WorkspaceResponseDto>> findAll() {
+
         return ResponseEntity.ok().body(workspaceService.findAll());
     }
 
     //워크스페이스 수정 API
     @PatchMapping("/{id}")
     public ResponseEntity<WorkspaceResponseDto> updateWorkspace(@PathVariable Long id,
-                                                                @RequestBody WorkspaceRequestDto requestDto) {
+                                                                @Valid @RequestBody WorkspaceRequestDto requestDto) {
+
         return ResponseEntity.ok().body(workspaceService.updateWorkspace(id, requestDto));
     }
 
     //워크스페이스 알림설정 API
     @PatchMapping("/{workspaceId}/notifications")
     public ResponseEntity<String> updateNotificationSettings(@PathVariable Long workspaceId,
-                                                             @RequestBody WorkspaceNotificationRequestDto requestDto) {
+                                                             @Valid @RequestBody WorkspaceNotificationRequestDto requestDto) {
+
         workspaceService.updateNotificationSettings(workspaceId, requestDto);
+
         return ResponseEntity.ok().body("설정이 완료되었습니다.");
     }
 
     //워크스페이스 삭제 API
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteWorkspace(@PathVariable Long id) {
+
         workspaceService.deleteWorkspace(id);
+
         return ResponseEntity.ok().body("워크스페이스가 삭제되었습니다.");
     }
 
     //멤버 추가 API
     @PostMapping("/{workspaceId}/members")
     public ResponseEntity<List<MemberResponseDto>> addMember(@PathVariable Long workspaceId,
-                                                             @RequestBody MemberRequestDto memberRequestDto) {
+                                                             @Valid @RequestBody MemberRequestDto memberRequestDto) {
+
         return ResponseEntity.ok().body(workspaceService.addMember(workspaceId, memberRequestDto));
     }
 
     //멤버 역할 수정 API
     @PatchMapping("{workspaceId}/members/{memberId}")
     public ResponseEntity<MemberResponseDto> updateMemberPart(@PathVariable Long memberId,
-                                                              @RequestBody MemberPartRequestDto memberPartRequestDto) {
+                                                              @Valid @RequestBody MemberPartRequestDto memberPartRequestDto) {
 
-        return ResponseEntity.ok().body(workspaceService.updateMemberPart(memberId,memberPartRequestDto));
+        return ResponseEntity.ok().body(workspaceService.updateMemberPart(memberId, memberPartRequestDto));
     }
 
     //멤버 전체 조회
     @GetMapping("/{workspaceId}/members")
     public ResponseEntity<List<MemberResponseDto>> findAllMembers(@PathVariable Long workspaceId) {
+
         return ResponseEntity.ok().body(workspaceService.findAllMembers(workspaceId));
     }
 
     //멤버 삭제
     @DeleteMapping("{workspaceId}/members/{memberId}")
     public ResponseEntity<String> deleteMember(@PathVariable Long workspaceId,
-                                               @PathVariable Long memberId){
+                                               @PathVariable Long memberId) {
+
         workspaceService.deleteMember(workspaceId, memberId);
+
         return ResponseEntity.ok().body("멤버가 삭제되었습니다.");
     }
 }
