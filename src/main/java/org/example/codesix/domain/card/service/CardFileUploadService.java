@@ -21,7 +21,6 @@ public class CardFileUploadService {
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
-
     private static final long MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
     /**
@@ -29,7 +28,6 @@ public class CardFileUploadService {
      */
     public String uploadFile(MultipartFile file) throws IOException {
         validateFile(file); // 파일 유효성 검사
-
         String originalFilename = file.getOriginalFilename();
         String uniqueFilename = generateUniqueFileName(originalFilename); // 고유 파일 이름 생성
 
@@ -93,11 +91,9 @@ public class CardFileUploadService {
         }
 
         String uniqueFilename = generateUniqueFileName(originalFilename);
-
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentLength(file.getSize());
         metadata.setContentType(file.getContentType());
-
         amazonS3.putObject(bucket, uniqueFilename, file.getInputStream(), metadata);
         String fileUrl = amazonS3.getUrl(bucket, uniqueFilename).toString();
 

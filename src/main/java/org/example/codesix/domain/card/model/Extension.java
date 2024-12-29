@@ -16,7 +16,6 @@ public enum Extension {
         return extension;
     }
 
-    // 파일 확장자 유효성 검사
     public static boolean isValidExtension(String extension) {
         return Arrays.stream(Extension.values())
                 .anyMatch(fileType -> fileType.getExtension().equalsIgnoreCase(extension));

@@ -45,10 +45,10 @@ public interface CardRepository extends JpaRepository<Card, Long> {
 
 
     @Query("""
-        SELECT c
-        FROM Card c
-        WHERE c.id = :id AND c.workList.id = :workListId
-        """)
+            SELECT c
+            FROM Card c
+            WHERE c.id = :id AND c.workList.id = :workListId
+            """)
     Optional<Card> findByIdAndWorkListId(Long workListId, Long id);
 
     default Card findWorkAndList(Long workListId, Long cardId) {
@@ -69,12 +69,12 @@ public interface CardRepository extends JpaRepository<Card, Long> {
     List<CardHistory> findHistoryByCardId(Long cardId);
 
     @Query("""
-        SELECT cf
-        FROM CardFile cf
-        LEFT JOIN cf.card c
-        LEFT JOIN c.workList wl
-        WHERE wl.id = :workListId
-          AND c.id = :cardId
-        """)
+            SELECT cf
+            FROM CardFile cf
+            LEFT JOIN cf.card c
+            LEFT JOIN c.workList wl
+            WHERE wl.id = :workListId
+              AND c.id = :cardId
+            """)
     List<CardFile> findByWorkListAndCard(@Param("workListId") Long workListId, @Param("cardId") Long cardId);
 }
