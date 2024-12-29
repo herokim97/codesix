@@ -125,7 +125,7 @@ public class CardController {
         return ResponseEntity.status(HttpStatus.OK).body(userIds);
     }
 
-    @DeleteMapping("{cardId}/cardMembers/{cardMemberId}")
+    @DeleteMapping("/{cardId}/cardMembers/{cardMemberId}")
     public ResponseEntity<String> deleteCardMember(@PathVariable Long workSpaceId,
                                                    @PathVariable Long workListId,
                                                    @PathVariable Long cardId,
