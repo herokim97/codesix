@@ -108,7 +108,7 @@ public class CardController {
         return ResponseEntity.status(HttpStatus.OK).body("파일이 삭제되었습니다.");
     }
 
-    @PostMapping("{cardId}/cardMembers")
+    @PostMapping("/{cardId}/cardMembers")
     public ResponseEntity<String> CreateMember(@PathVariable Long workSpaceId,
                                                @PathVariable Long workListId,
                                                @PathVariable Long cardId,
@@ -117,7 +117,7 @@ public class CardController {
         return ResponseEntity.status(HttpStatus.CREATED).body("카드멤버가 추가되었습니다.");
     }
 
-    @GetMapping("{cardId}/cardMembers")
+    @GetMapping("/{cardId}/cardMembers")
     public ResponseEntity<List<Long>> findAllCardMembers(@PathVariable Long workSpaceId,
                                                               @PathVariable Long workListId,
                                                               @PathVariable Long cardId){
@@ -125,7 +125,7 @@ public class CardController {
         return ResponseEntity.status(HttpStatus.OK).body(userIds);
     }
 
-    @DeleteMapping("{cardId}/cardMembers/{cardMemberId}")
+    @DeleteMapping("/{cardId}/cardMembers/{cardMemberId}")
     public ResponseEntity<String> deleteCardMember(@PathVariable Long workSpaceId,
                                                    @PathVariable Long workListId,
                                                    @PathVariable Long cardId,
