@@ -6,8 +6,10 @@ import org.example.codesix.global.exception.ExceptionType;
 import org.example.codesix.global.exception.NotFoundException;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
@@ -20,4 +22,9 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     @Query("select m.part from Member m where m.user.email = :loginEmail and m.workspace.id = :workspaceId")
     Part findPartByUserEmailAndWorkspaceId(String loginEmail, Long workspaceId);
 
+    @Query("""
+    SELECT m FROM Member m
+    WHERE m.user.id = :userId AND m.workspace.id = :workspaceId
+    """)
+    Optional<Member> findByUserIdAndWorkspaceId(@Param("userId") Long userId, @Param("workspaceId") Long workspaceId);
 }
