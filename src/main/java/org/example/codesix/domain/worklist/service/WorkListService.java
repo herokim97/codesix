@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -39,6 +40,12 @@ public class WorkListService {
         WorkList workList = workListRepository.findByIdOrElseThrow(workListId);
         return WorkListResponseDto.toDto(workList);
 
+    }
+    @Transactional
+    public List<WorkListResponseDto> getWorkLists(Long boardId) {
+        workListRepository.findByIdOrElseThrow(boardId);
+        List<WorkList> worklists = workListRepository.findAllByBoardId(boardId);
+        return worklists.stream().map(WorkListResponseDto ::toDto).toList();
     }
 
     @Transactional
