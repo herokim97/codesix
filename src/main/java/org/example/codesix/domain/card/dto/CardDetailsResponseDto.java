@@ -39,8 +39,6 @@ public class CardDetailsResponseDto {
                 new ArrayList<>(new HashSet<>(userIds)),
                 cardFileUrls,
                 comments
-
         );
     }
-
 }
