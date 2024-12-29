@@ -16,13 +16,13 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/workSpace/{workSpaceId}/card/{cardId}/comments")
+@RequestMapping("/api/workspaces/{workspaceId}/cards/{cardId}/comments")
 public class CommentController {
 
     private final CommentService commentService;
 
     @PostMapping
-    public ResponseEntity<CommentResponseDto> createComment(@PathVariable Long workSpaceId,
+    public ResponseEntity<CommentResponseDto> createComment(@PathVariable Long workspaceId,
                                                             @PathVariable Long cardId,
                                                             @Valid @RequestBody CommentRequestDto commentRequestDto,
                                                             @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
@@ -31,14 +31,14 @@ public class CommentController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CommentResponseDto>> findAllComment(@PathVariable Long workSpaceId,
+    public ResponseEntity<List<CommentResponseDto>> findAllComment(@PathVariable Long workspaceId,
                                                                    @PathVariable Long cardId) {
         List<CommentResponseDto> comments = commentService.findAllComments(cardId);
         return ResponseEntity.status(HttpStatus.OK).body(comments);
     }
 
     @PatchMapping("/{commentId}")
-    public ResponseEntity<CommentResponseDto> udpateComment(@PathVariable Long workSpaceId,
+    public ResponseEntity<CommentResponseDto> udpateComment(@PathVariable Long workspaceId,
                                                             @PathVariable Long cardId,
                                                             @PathVariable Long commentId,
                                                             @Valid @RequestBody CommentRequestDto commentRequestDto,
@@ -48,7 +48,7 @@ public class CommentController {
     }
 
     @DeleteMapping("/{commentId}")
-    public ResponseEntity<String> deleteComment(@PathVariable Long workSpaceId,
+    public ResponseEntity<String> deleteComment(@PathVariable Long workspaceId,
                                                 @PathVariable Long cardId,
                                                 @PathVariable Long commentId,
                                                 @AuthenticationPrincipal UserDetailsImpl userDetailsImpl){
