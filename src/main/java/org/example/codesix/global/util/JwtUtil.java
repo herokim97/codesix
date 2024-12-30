@@ -30,7 +30,7 @@ public class JwtUtil {
     private String secret;
 
     @Getter
-    @Value("300000")
+    @Value("30000000")
     private long expiryMillis;
 
     private final UserRepository userRepository;
