@@ -22,14 +22,18 @@
 
 ## 👥 팀원 소개
 
-- **김영웅** : 프로젝트 전체 관리, 회원, 배포, 영상 촬영  
-- **박시환**: 보드, 리스트, 첨부파일, PPT  
-- **정가현**: 워크스페이스, 알림, 권한  
-- **장대산**: 카드, 댓글, 조건 검색, 카드 활동 내역, 첨부파일, PPT  
+- **김영웅** : 프로젝트 전체 관리, 회원, 배포
+- **박시환**: 보드, 리스트, 첨부파일
+- **정가현**: 워크스페이스, 알림, 권한
+- **장대산**: 카드, 댓글, 조건 검색, 카드 활동 내역, 첨부파일
+
+---
+
 ## 📄 API 명세서
 
 [API 명세서 보기](https://www.notion.so/teamsparta/1582dc3ef51481b58607de9fd2d570a2?v=1582dc3ef51481278000000ca938f48d&pvs=4)
 
+---
 
 ## 📊 ERD 보기
 
@@ -38,13 +42,14 @@
   <img src="https://github.com/user-attachments/assets/1a08eff3-e545-445b-a128-863c40767027" alt="ERD">
 </details>
 
+---
+
 ## 🎨 와이어 프레임 보기
 
 <details>
   <summary>와이어 프레임 펼쳐보기</summary>
   <img src="https://file.notion.so/f/f/83c75a39-3aba-4ba4-a792-7aefe4b07895/6b40ea6a-7cc6-4dd7-bed0-30bbf603a8ad/image.png?table=block&id=40e616ab-d156-44a5-b6b4-3f6e90714810&spaceId=83c75a39-3aba-4ba4-a792-7aefe4b07895&expirationTimestamp=1735689600000&signature=5vEAn5_oXmvuwK9fXqLYqxc1XO4d26kfNwIcTDuOmEU&downloadName=image.png" alt="와이어 프레임">
 </details>
-
 
 ---
 
@@ -72,3 +77,33 @@
 
 ---
 
+##  구현 기능
+
+<details>
+  <summary>기능 펼쳐보기</summary>
+
+  ### User
+  - 회원가입, 로그인, 회원 탈퇴  
+
+  ### WorkSpace
+  - 생성, 단건 조회, 전체 조회, 수정, 삭제  
+  - 멤버 추가, 멤버 삭제, 멤버 역할 변경, 멤버 전체 조회  
+
+  ### Notification
+  - 알림 설정  
+
+  ### Board
+  - 생성, 수정, 전체 조회, 삭제, 이미지 업로드  
+
+  ### WorkList
+  - 생성, 삭제, 전체 조회, 수정  
+
+  ### Card
+  - 생성, 단건 조회, 조건 검색, 수정, 삭제  
+  - 카드 첨부파일 업로드, 첨부파일 상세 조회, 첨부파일 삭제  
+  - 카드 멤버 추가, 카드 멤버 조회, 카드 멤버 삭제  
+
+  ### Comment
+  - 작성, 전체 조회, 수정, 삭제  
+
+</details>
