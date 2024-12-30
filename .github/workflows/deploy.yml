@@ -59,22 +59,22 @@ jobs:
                sudo docker rm $CONTAINER_ID
              fi
              echo "aaa" >> aba.txt
-            # 새 이미지 Pull 및 실행
-             sudo docker pull ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.DOCKER_IMAGE_TAG_NAME }}:latest
+            # 새 이미지 Pull 및 실행 ---
+             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKER_IMAGE_TAG_NAME }}:latest
              sudo docker run -d -p 8080:8080 \
              -e DB_USERNAME=${{secrets.DATABASE_USERNAME}} \
              -e DB_PASSWORD=${{secrets.DATABASE_PASSWORD}} \
              -e DB_URL=${{secrets.DB_URL}} \
-             ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.DOCKER_IMAGE_TAG_NAME }}:latest
+             ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKER_IMAGE_TAG_NAME }}:latest
 
             # 4. 환경 변수 설정 및 컨테이너 실행
             echo "Running the new Docker container..."
-            docker run -d \
+            sudo docker run -d \
               --name codesix-app \
               -e URL=jdbc:mysql://mysql:3306/codesix \
-              -e DATABASE_USERNAME=${DATABASE_USERNAME} \
-              -e DATABASE_PASSWORD=${DATABASE_PASSWORD} \
-              -e ACCESS_KEY=${ACCESS_KEY} \
-              -e SECRET_KEY=${SECRET_KEY} \
+              -e DATABASE_USERNAME=${{ secrets.DATABASE_USERNAME }} \
+              -e DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }} \
+              -e ACCESS_KEY=${{ secrets.ACCESS_KEY }} \
+              -e SECRET_KEY=${{ secrets.SECRET_KEY }} \
               -p 8080:8080 \
               herokim97/codesix:latest
