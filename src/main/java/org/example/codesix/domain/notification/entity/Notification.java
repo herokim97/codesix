@@ -10,8 +10,13 @@ import org.example.codesix.global.entity.BaseEntity;
 @Entity
 public class Notification extends BaseEntity {
 
-    @EmbeddedId
-    private NotificationId id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "workspace_id")
+    private Workspace workspace;
 
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
@@ -21,7 +26,7 @@ public class Notification extends BaseEntity {
     private String message;
 
     public Notification(Workspace workspace, Type type, String message) {
-        this.id = new NotificationId(workspace);
+        this.workspace = workspace;
         this.type = type;
         this.message = message;
     }
