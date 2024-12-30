@@ -66,3 +66,6 @@ jobs:
              -e DB_PASSWORD=${{secrets.DATABASE_PASSWORD}} \
              -e DB_URL=${{secrets.DB_URL}} \
              ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKER_IMAGE_TAG_NAME }}:latest
+
+
+#docker run -d -p 8080:8080 -e DB_USERNAME=root -e DB_PASSWORD=gksl671456! -e DB_URL=jdbc:mysql://52.79.142.162:3306/codesix herokim97/codesix:latest

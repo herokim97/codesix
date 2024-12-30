@@ -16,6 +16,7 @@ EXPOSE 8080
 
 ENV URL=jdbc:mysql://localhost:3306/codesix
 # docker-compose 를 사용하여 관리하기 : 각각의 이름으로 통신 가능
-
+# 52.79.142.162
+# jdbc:mysql://52.79.142.162:3306/codesix
 # 애플리케이션을 실행하기 위한 엔트리포인트 정의
 ENTRYPOINT ["java", "-jar", "/app/app.jar"]
