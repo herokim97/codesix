@@ -1,72 +1,80 @@
 name: Deploy
 
 on:
-  workflow_dispatch:
+  workflow_dispatch:  # 수동으로 실행할 수 있는 트리거
   push:
     branches:
-      - main
-      - develop
+      - main   # main 브랜치에 푸시되면 실행
+      - develop  # develop 브랜치에 푸시되면 실행
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest  # Ubuntu 최신 버전에서 실행
+
     steps:
+      # 1. 코드 체크아웃
       - name: Checkout
         uses: actions/checkout@v4
+        # GitHub 리포지토리의 코드를 체크아웃합니다.
 
-      # Set up JDK
+      # 2. JDK 17 설정
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
-          distribution: 'temurin'
-          java-version: '17'
+          distribution: 'temurin'  # OpenJDK의 temurin 배포판 사용
+          java-version: '17'  # JDK 17 설정
 
+      # 3. gradlew에 실행 권한 부여
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
+        # gradlew 파일에 실행 권한을 부여하여, 명령어 실행 가능하게 합니다.
 
+      # 4. Gradle을 이용해 빌드 (bootJar)
       - name: gradlew bootJar
         run: ./gradlew bootJar
+        # Gradle을 사용하여 Spring Boot 프로젝트를 JAR 파일로 빌드합니다.
 
+      # 5. Docker Hub에 로그인
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+          username: ${{ secrets.DOCKER_USERNAME }}  # Docker Hub 사용자명 (시크릿 값으로 관리)
+          password: ${{ secrets.DOCKER_PASSWORD }}  # Docker Hub 비밀번호 (시크릿 값으로 관리)
+        # Docker Hub에 로그인하여 이미지를 빌드하고 푸시할 수 있게 합니다.
 
-            # Build and push Docker image
+      # 6. Docker 이미지 빌드 및 푸시
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: .
-          file: Dockerfile
-          push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/codesix:latest
+          context: .  # 현재 디렉토리에서 Docker 이미지를 빌드합니다.
+          file: Dockerfile  # 사용할 Dockerfile 경로
+          push: true  # 빌드된 이미지를 Docker Hub에 푸시
+          tags: ${{ secrets.DOCKER_USERNAME }}/codesix:latest  # Docker Hub에 푸시할 이미지 태그 설정
 
-
+      # 7. EC2 서버에 SSH로 접속하여 명령어 실행
       - name: SSH Commands
         uses: appleboy/ssh-action@v0.1.6
         with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.EC2_USER }}  # EC2 인스턴스 기본 사용자
-          key: ${{ secrets.SSH_KEY }}
-          port: 22
-          script_stop: true
+          host: ${{ secrets.SSH_HOST }}  # EC2 서버 IP 주소 (시크릿 값으로 관리)
+          username: ${{ secrets.EC2_USER }}  # EC2 기본 사용자 (예: ubuntu) (시크릿 값으로 관리)
+          key: ${{ secrets.SSH_KEY }}  # EC2 SSH 키 (시크릿 값으로 관리)
+          port: 22  # 기본 SSH 포트
+          script_stop: true  # 스크립트가 실패하면 실행 중단
           script: |
             # 기존 컨테이너 중지 및 제거
-             CONTAINER_ID=$(sudo docker ps -q --filter "publish=8080-8080")
-             if [ ! -z "$CONTAINER_ID" ]; then
-               sudo docker stop $CONTAINER_ID
-               sudo docker rm $CONTAINER_ID
-             fi
+            CONTAINER_ID=$(sudo docker ps -q --filter "publish=8080-8080")  # 8080 포트를 사용하는 컨테이너 ID 찾기
+            if [ ! -z "$CONTAINER_ID" ]; then
+              sudo docker stop $CONTAINER_ID  # 기존 컨테이너 중지
+              sudo docker rm $CONTAINER_ID  # 기존 컨테이너 제거
+            fi
             
-            # 새 이미지 Pull 및 실행 ---
-             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKER_IMAGE_TAG_NAME }}:latest
-             sudo docker run -d -p 8080:8080 \
-             -e ACCESS_KEY=${{secrets.ACCESS_KEY}} \
-             -e SECRET_KEY=${{secrets.SECRET_KEY}} \
-             -e DATABASE_USERNAME=${{secrets.DATABASE_USERNAME}} \
-             -e DATABASE_PASSWORD=${{secrets.DATABASE_PASSWORD}} \
-             -e URL=${{secrets.DB_URL}} \
-             ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKER_IMAGE_TAG_NAME }}:latest
-
-
+            # 새 Docker 이미지 Pull 및 실행
+            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKER_IMAGE_TAG_NAME }}:latest  # 최신 이미지를 Docker Hub에서 Pull
+            sudo docker run -d -p 8080:8080 \
+            -e ACCESS_KEY=${{ secrets.ACCESS_KEY }}  # AWS 액세스 키 (시크릿 값으로 관리)
+            -e SECRET_KEY=${{ secrets.SECRET_KEY }}  # AWS 시크릿 키 (시크릿 값으로 관리)
+            -e DATABASE_USERNAME=${{ secrets.DATABASE_USERNAME }}  # 데이터베이스 사용자명 (시크릿 값으로 관리)
+            -e DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}  # 데이터베이스 비밀번호 (시크릿 값으로 관리)
+            -e URL=${{ secrets.DB_URL }}  # 데이터베이스 URL (시크릿 값으로 관리)
+            ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKER_IMAGE_TAG_NAME }}:latest  # Pull한 이미지를 8080 포트로 실행
+        # SSH로 EC2 인스턴스에 접속하여 기존 컨테이너를 중지하고 새로운 Docker 이미지를 실행합니다.
