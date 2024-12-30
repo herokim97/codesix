@@ -47,7 +47,7 @@ jobs:
         uses: appleboy/ssh-action@v0.1.6
         with:
           host: ${{ secrets.SSH_HOST }}
-          username: ${{ secerts.EC2_USER }}  # EC2 인스턴스 기본 사용자
+          username: ${{ secrets.EC2_USER }}  # EC2 인스턴스 기본 사용자
           key: ${{ secrets.SSH_KEY }}
           port: 22
           script_stop: true
