@@ -5,7 +5,7 @@ FROM openjdk:17-jdk-slim
 LABEL type="application"
 
 # 작업 디렉토리 설정
-WORKDIR /app
+WORKDIR /codesix
 
 # 애플리케이션 jar 파일을 컨테이너로 복사
 COPY build/libs/*-SNAPSHOT.jar app.jar
