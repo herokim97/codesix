@@ -21,7 +21,7 @@ ENV URL=jdbc:mysql://localhost:3306/codesix
 
 
 # docker start mysql-container
-# docker start ~
+# docker start ~ #
 
 # 애플리케이션을 실행하기 위한 엔트리포인트 정의
 ENTRYPOINT ["java", "-jar", "/app/app.jar"]
