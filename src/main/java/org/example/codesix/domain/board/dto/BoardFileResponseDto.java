@@ -4,21 +4,22 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.codesix.domain.board.entity.Board;
-import org.example.codesix.domain.board.entity.BoardFile;
-import org.example.codesix.domain.board.entity.Board;
-
-import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class BoardResponseDto {
+public class BoardFileResponseDto {
     private Long id;
     private String title;
     private String backgroundColor;
+    private String boardFileUrl;
 
+    public static BoardFileResponseDto toDtoBoardFile(Board board, String boardFileUrl) {
+        return new BoardFileResponseDto(board.getId(), board.getTitle(),
+                board.getBackgroundColor(),boardFileUrl);
+
+
+
+    }
 
 }
-
-
-
