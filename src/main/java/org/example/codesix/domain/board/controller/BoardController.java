@@ -21,6 +21,7 @@ import java.util.List;
 public class BoardController {
     private final BoardService boardService;
 
+
     //보드 생성
     @PostMapping
     public ResponseEntity<BoardResponseDto> createBoard(@PathVariable Long workspaceId,
@@ -36,7 +37,7 @@ public class BoardController {
         List<BoardResponseDto> boards = boardService.getBoards(workspaceId);
         return ResponseEntity.ok(boards);
     }
-    @GetMapping("/boardId")
+    @GetMapping("/{boardId}")
     public ResponseEntity<BoardFileResponseDto> findBoard(@PathVariable Long boardId){
         BoardFileResponseDto boardResponseDto = boardService.findBoard(boardId);
         return ResponseEntity.ok(boardResponseDto);

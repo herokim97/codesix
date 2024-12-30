@@ -3,6 +3,7 @@ package org.example.codesix.domain.board.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.codesix.domain.board.dto.BoardFileResponseDto;
 import org.example.codesix.domain.board.dto.BoardRequestDto;
 import org.example.codesix.domain.board.dto.BoardResponseDto;
 import org.example.codesix.domain.board.entity.Board;
@@ -38,19 +39,14 @@ public class BoardService {
 
     public BoardResponseDto createBoard(Long workspaceId, BoardRequestDto requestDto) {
         Workspace workspace = workspaceRepository.findByIdOrElseThrow(workspaceId);
-
         Board board = new Board(workspace,
-                                requestDto.getTitle(),
-                                requestDto.getBackgroundColor(),
-                                requestDto.getBackgroundImage());
+                requestDto.getTitle(),
+                requestDto.getBackgroundColor());
         Board savedBoard = boardRepository.save(board);
         slackService.callSlackApi(workspace.getTitle(), savedBoard.getTitle(), Type.BOARD_ADD, workspace);
-        return BoardResponseDto.toDto(savedBoard);
-        Board board = new Board(workspace, requestDto.getTitle(), requestDto.getBackgroundColor());
-        board = boardRepository.save(board);
-
         return new BoardResponseDto(board.getId(), board.getTitle(), board.getBackgroundColor());
     }
+
 
     @Transactional
     public List<BoardResponseDto> getBoards(Long workspaceId) {
@@ -64,25 +60,25 @@ public class BoardService {
     }
 
     @Transactional
-    public BoardResponseDto updateBoard(Long workspaceId, Long boardId, BoardRequestDto requestDto){
+    public BoardResponseDto updateBoard(Long workspaceId, Long boardId, BoardRequestDto requestDto) {
         Workspace workspace = workspaceRepository.findByIdOrElseThrow(workspaceId);
-        Board board= boardRepository.findByIdOrElseThrow(boardId);
+        Board board = boardRepository.findByIdOrElseThrow(boardId);
         slackService.callSlackApi(workspace.getTitle(), board.getTitle(), Type.BOARD_UPDATE, workspace);
-        board.updateBoard(requestDto.getTitle(), requestDto.getBackgroundColor(), requestDto.getBackgroundImage());
+        board.updateBoard(requestDto.getTitle(), requestDto.getBackgroundColor());
         Board savedBoard = boardRepository.save(board);
 
         return new BoardResponseDto(savedBoard.getId(), savedBoard.getTitle(), savedBoard.getBackgroundColor());
     }
 
     @Transactional
-    public void deleteBoard(Long workspaceId, Long boardId){
+    public void deleteBoard(Long workspaceId, Long boardId) {
         Workspace workspace = workspaceRepository.findByIdOrElseThrow(workspaceId);
         Board board = boardRepository.findByIdOrElseThrow(boardId);
         boardRepository.delete(board);
         slackService.callSlackApi(workspace.getTitle(), board.getTitle(), Type.BOARD_DELETE, workspace);
-}
-
     }
+
+
 
     public String uploadFile(Long boardId, MultipartFile file) {
         BoardFile boardFile;

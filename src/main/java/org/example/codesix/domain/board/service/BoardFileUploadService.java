@@ -50,7 +50,7 @@ public class BoardFileUploadService {
     private void validateFile(MultipartFile file) {
         String extension = getExtension(file.getOriginalFilename());
         // Enum으로 확장자 검사
-        if (!"JPG".equals(extension)) {
+        if (!"jpg".equals(extension)) {
             throw new BadValueException(ExceptionType.UNSUPPORTED_FILE_TYPE);
         }
 
