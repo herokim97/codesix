@@ -2,6 +2,7 @@ package org.example.codesix.global.filter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -55,6 +56,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     // 쿠키에서 JWT 토큰을 추출하는 메서드
     private String getTokenFromCookie(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null) {
+            System.out.println("No cookies found in the request.");
+            return null;
+        }
         return Arrays.stream(request.getCookies())
                 .filter(cookie -> "Authorization".equals(cookie.getName())) // 쿠키 이름이 Authorization인 경우
                 .map(cookie -> cookie.getValue()) // JWT 토큰 값 반환
