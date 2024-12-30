@@ -23,6 +23,10 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
 
+      # Gradle 캐시 강제로 비우기
+      - name: Clear Gradle Cache
+        run: rm -rf ~/.gradle/caches
+
       - name: gradlew bootJar
         run: ./gradlew bootJar
 
