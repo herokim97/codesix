@@ -58,14 +58,15 @@ jobs:
                sudo docker stop $CONTAINER_ID
                sudo docker rm $CONTAINER_ID
              fi
-             echo "aaa" >> aba.txt
+            
             # 새 이미지 Pull 및 실행 ---
              sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKER_IMAGE_TAG_NAME }}:latest
              sudo docker run -d -p 8080:8080 \
-             -e DB_USERNAME=${{secrets.DATABASE_USERNAME}} \
-             -e DB_PASSWORD=${{secrets.DATABASE_PASSWORD}} \
-             -e DB_URL=${{secrets.DB_URL}} \
+             -e ACCESS_KEY=${{secrets.ACCESS_KEY}} \
+             -e SECRET_KEY=${{secrets.SECRET_KEY}} \
+             -e DATABASE_USERNAME=${{secrets.DATABASE_USERNAME}} \
+             -e DATABASE_PASSWORD=${{secrets.DATABASE_PASSWORD}} \
+             -e URL=${{secrets.DB_URL}} \
              ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKER_IMAGE_TAG_NAME }}:latest
 
 
-#docker run -d -p 8080:8080 -e DB_USERNAME=root -e DB_PASSWORD=gksl671456! -e DB_URL=jdbc:mysql://52.79.142.162:3306/codesix herokim97/codesix:latest
