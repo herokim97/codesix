@@ -67,14 +67,14 @@ jobs:
              -e DB_URL=${{secrets.DB_URL}} \
              ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKER_IMAGE_TAG_NAME }}:latest
 
-            # 4. 환경 변수 설정 및 컨테이너 실행
-            echo "Running the new Docker container..."
-            sudo docker run -d \
-              --name codesix-app \
-              -e URL=jdbc:mysql://mysql:3306/codesix \
-              -e DATABASE_USERNAME=${{ secrets.DATABASE_USERNAME }} \
-              -e DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }} \
-              -e ACCESS_KEY=${{ secrets.ACCESS_KEY }} \
-              -e SECRET_KEY=${{ secrets.SECRET_KEY }} \
-              -p 8080:8080 \
-              herokim97/codesix:latest
+#             4. 환경 변수 설정 및 컨테이너 실행
+#            echo "Running the new Docker container..."
+#            sudo docker run -d \
+#              --name codesix-app \
+#              -e URL=jdbc:mysql://mysql:3306/codesix \
+#              -e DATABASE_USERNAME=${{ secrets.DATABASE_USERNAME }} \
+#              -e DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }} \
+#              -e ACCESS_KEY=${{ secrets.ACCESS_KEY }} \
+#              -e SECRET_KEY=${{ secrets.SECRET_KEY }} \
+#              -p 8080:8080 \
+#              herokim97/codesix:latest
