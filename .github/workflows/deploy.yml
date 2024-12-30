@@ -47,12 +47,32 @@ jobs:
         uses: appleboy/ssh-action@v0.1.6
         with:
           host: ${{ secrets.SSH_HOST }}
-          username: ec2-admin
+          username: ec2-user  # EC2 인스턴스 기본 사용자
           key: ${{ secrets.SSH_KEY }}
           port: 22
           script_stop: true
-          script:
+          script: |
+            # 1. 실행 중인 Docker 컨테이너 중지 및 삭제
+            echo "Stopping and removing existing containers..."
+            docker ps -q | xargs -r docker stop
+            docker ps -aq | xargs -r docker rm
 
-            #실행 중인 도커 컨테이너 중지, 삭제 및 이미지 삭제
-            #최신화된 이미지 pull 해오기
-            #환경 변수 설정 후 docker run
+            # 2. 기존 Docker 이미지를 삭제
+            echo "Removing old Docker images..."
+            docker images -q | xargs -r docker rmi -f
+
+            # 3. 최신화된 이미지 Pull
+            echo "Pulling the latest Docker image..."
+            docker pull herokim97/codesix:latest
+
+            # 4. 환경 변수 설정 및 컨테이너 실행
+            echo "Running the new Docker container..."
+            docker run -d \
+              --name codesix-app \
+              -e URL=jdbc:mysql://mysql:3306/codesix \
+              -e DATABASE_USERNAME=${DATABASE_USERNAME} \
+              -e DATABASE_PASSWORD=${DATABASE_PASSWORD} \
+              -e ACCESS_KEY=${ACCESS_KEY} \
+              -e SECRET_KEY=${SECRET_KEY} \
+              -p 8080:8080 \
+              herokim97/codesix:latest
