@@ -57,25 +57,4 @@ class UserControllerTest {
 
 
     }
-
-//    @Test
-//    void loginTest() throws Exception {
-//        // Given
-//        UserLoginRequestDto requestDto = new UserLoginRequestDto("user@naver.com", "Rladuddnd!234");
-//        UserLoginResponseDto responseDto = new UserLoginResponseDto(1L,"user@naver.com", "login Success", "Bearer"  );
-//
-//        // Mocking userService
-//        when(userService.login(any(UserLoginRequestDto.class), any())).thenReturn(responseDto);
-//
-//        // When & Then
-//        mockMvc.perform(post("/api/users/login")
-//                        .contentType("application/json")
-//                        .content(objectMapper.writeValueAsString(requestDto)))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.id").value(responseDto.getId()))
-//                .andExpect(jsonPath("$.email").value("user@naver.com"));
-//
-//        // Verify service interaction
-//        verify(userService, times(1)).login(any(UserLoginRequestDto.class), any());
-//    }
 }

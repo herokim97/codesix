@@ -1,0 +1,31 @@
+version: "3.8"
+services:
+  app:
+    image: herokim97/codesix:latest  # Docker Hub에서 herokim97/codesix 이미지를 사용
+    ports:
+      - "8080:8080"
+    environment:
+      - URL=jdbc:mysql://mysql:3306/codesix
+      - DATABASE_USERNAME=${DATABASE_USERNAME}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      - ACCESS_KEY=${ACCESS_KEY}
+      - SECRET_KEY=${SECRET_KEY}
+    depends_on:
+      - mysql  # mysql 서비스에 의존
+#    restart: always
+
+  mysql:
+    image: mysql:8.0  # 공식 MySQL 이미지 사용
+    environment:
+      MYSQL_DATABASE: codesix
+      MYSQL_ROOT_PASSWORD: ${DATABASE_PASSWORD}
+      DATABASE_USERNAME: ${DATABASE_USERNAME}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+    ports:
+      - "3307:3306"
+#    volumes:
+#      - mysql-data:/var/lib/mysql
+
+#volumes:
+#  mysql-data:
+#    driver: local

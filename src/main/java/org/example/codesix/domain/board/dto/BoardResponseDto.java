@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.codesix.domain.board.entity.Board;
 import org.example.codesix.domain.board.entity.BoardFile;
+import org.example.codesix.domain.board.entity.Board;
 
 import java.util.List;
 
