@@ -23,11 +23,17 @@ public interface CardRepository extends JpaRepository<Card, Long> {
                 .orElseThrow(() -> new NotFoundException(ExceptionType.CARD_NOT_FOUND));
     }
 
-    @Query("SELECT cm FROM CardMember cm WHERE cm.id = :cardMemberId")
-    Optional<CardMember> findByCardMemberId(Long cardMemberId);
+    @Query("""
+        SELECT cm
+        FROM CardMember cm
+        JOIN cm.member m
+        JOIN m.user u
+        WHERE cm.card.id = :cardId AND u.id = :userId
+    """)
+    Optional<CardMember> findByCardMemberId(Long cardId, Long userId);
 
-    default CardMember findByCardMemberIdOrElseThrow(Long cardMemberId) {
-        return findByCardMemberId(cardMemberId)
+    default CardMember findByCardMemberIdOrElseThrow(Long cardId, Long userId) {
+        return findByCardMemberId(cardId,userId)
                 .orElseThrow(() -> new NotFoundException(ExceptionType.CARD_MEMBER_NOT_FOUND));
     }
 

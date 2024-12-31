@@ -24,7 +24,7 @@ public class CommentService {
 
     @Transactional
     public CommentResponseDto createComment(Long cardId, User user, String content) {
-        CardMember cardMember = cardRepository.findByCardMemberIdOrElseThrow(user.getId());
+        CardMember cardMember = cardRepository.findByCardMemberIdOrElseThrow(cardId,user.getId());
         Card card = cardRepository.findByIdOrElseThrow(cardId);
         Comment comment = new Comment(card, cardMember, content);
         card.addHistory(createCardHistory(card, "댓글 작성", user.getId()));

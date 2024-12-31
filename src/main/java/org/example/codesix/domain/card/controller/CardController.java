@@ -118,10 +118,10 @@ public class CardController {
     }
 
     @GetMapping("{cardId}/cardMembers")
-    public ResponseEntity<List<Long>> findAllCardMembers(@PathVariable Long workspaceId,
+    public ResponseEntity<List<CardMemberUserIdResponseDto>> findAllCardMembers(@PathVariable Long workspaceId,
                                                               @PathVariable Long workListId,
                                                               @PathVariable Long cardId){
-        List <Long> userIds = cardService.findAllCardMembers(workspaceId,workListId,cardId);
+        List<CardMemberUserIdResponseDto> userIds = cardService.findAllCardMembers(workspaceId,workListId,cardId);
         return ResponseEntity.status(HttpStatus.OK).body(userIds);
     }
 

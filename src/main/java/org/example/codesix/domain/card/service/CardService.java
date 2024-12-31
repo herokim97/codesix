@@ -32,6 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -194,13 +195,16 @@ public class CardService {
         cardMemberRepository.save(cardMember);
     }
 
-    public List<Long> findAllCardMembers(Long workspaceId, Long workListId, Long cardId) {
+    public List<CardMemberUserIdResponseDto> findAllCardMembers(Long workspaceId, Long workListId, Long cardId) {
         cardRepository.findWorkAndList(workListId, cardId);
-        return cardMemberRepository.findCardMemberUserIds(workspaceId, workListId, cardId);
+
+
+    return cardMemberRepository.findCardMemberUserIds(workspaceId, workListId, cardId);
     }
 
     public void deleteCardMember(Long workListId, Long cardId, Long cardMemberId) {
         cardRepository.findWorkAndList(workListId, cardId);
+        memberRepository.findByIdOrElseThrow(cardMemberId);
         cardMemberRepository.deleteById(cardMemberId);
     }
 }
